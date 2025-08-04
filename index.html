@@ -327,4 +327,225 @@
             
             document.getElementById('sipInvested').textContent = formatCurrency(Math.round(totalInvested));
             document.getElementById('sipReturns').textContent = formatCurrency(Math.round(totalReturns));
-            document.getElementById('sipMaturity').textContent = formatCurrency(Math.round(fut
+            document.getElementById('sipMaturity').textContent = formatCurrency(Math.round(futureValue));
+            document.getElementById('sipResult').classList.remove('hidden');
+            
+            // Create SIP growth chart
+            createSIPChart(P, monthlyRate, n, annualIncrement);
+        });
+
+        // Lumpsum Calculator
+        document.getElementById('lumpsumForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const P = parseFloat(document.getElementById('lumpsumAmount').value);
+            const r = parseFloat(document.getElementById('lumpsumRate').value) / 100;
+            const t = parseFloat(document.getElementById('lumpsumYears').value);
+            
+            if (P <= 0 || r <= 0 || t <= 0) {
+                alert('Please enter valid positive values');
+                return;
+            }
+            
+            // Lumpsum Formula: FV = P × (1 + r)^t
+            const futureValue = P * Math.pow(1 + r, t);
+            const totalReturns = futureValue - P;
+            
+            document.getElementById('lumpsumInvested').textContent = formatCurrency(P);
+            document.getElementById('lumpsumReturns').textContent = formatCurrency(totalReturns);
+            document.getElementById('lumpsumMaturity').textContent = formatCurrency(futureValue);
+            document.getElementById('lumpsumResult').classList.remove('hidden');
+            
+            // Create Lumpsum growth chart
+            createLumpsumChart(P, r, t);
+        });
+
+        // EMI Calculator (Floating Rate)
+        document.getElementById('emiFloatingForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const P = parseFloat(document.getElementById('floatingLoanAmount').value);
+            const r = parseFloat(document.getElementById('floatingRate').value) / 100 / 12;
+            const n = parseFloat(document.getElementById('floatingTenure').value);
+            
+            if (P <= 0 || r <= 0 || n <= 0) {
+                alert('Please enter valid positive values');
+                return;
+            }
+            
+            // EMI Formula: EMI = [P × r × (1 + r)^n] / [(1 + r)^n – 1]
+            const emi = (P * r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
+            const totalAmount = emi * n;
+            const totalInterest = totalAmount - P;
+            
+            document.getElementById('floatingEMI').textContent = formatCurrency(Math.round(emi));
+            document.getElementById('floatingTotalInterest').textContent = formatCurrency(Math.round(totalInterest));
+            document.getElementById('floatingTotalAmount').textContent = formatCurrency(Math.round(totalAmount));
+            document.getElementById('floatingResult').classList.remove('hidden');
+        });
+
+        // EMI Calculator (Flat Rate)
+        document.getElementById('emiFlatForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const P = parseFloat(document.getElementById('flatLoanAmount').value);
+            const r = parseFloat(document.getElementById('flatRate').value);
+            const n = parseFloat(document.getElementById('flatTenure').value);
+            
+            if (P <= 0 || r <= 0 || n <= 0) {
+                alert('Please enter valid positive values');
+                return;
+            }
+            
+            const tenureYears = n / 12;
+            
+            // Flat Rate Formula
+            const totalInterest = (P * r * tenureYears) / 100;
+            const totalAmount = P + totalInterest;
+            const emi = totalAmount / n;
+            
+            document.getElementById('flatEMI').textContent = formatCurrency(Math.round(emi));
+            document.getElementById('flatTotalInterest').textContent = formatCurrency(Math.round(totalInterest));
+            document.getElementById('flatTotalAmount').textContent = formatCurrency(Math.round(totalAmount));
+            document.getElementById('flatResult').classList.remove('hidden');
+        });
+
+        // Create SIP Growth Chart
+        function createSIPChart(monthlyInvestment, monthlyRate, years, annualIncrement = 0) {
+            const ctx = document.getElementById('sipChart').getContext('2d');
+            
+            if (sipChart) {
+                sipChart.destroy();
+            }
+            
+            const labels = [];
+            const investedData = [];
+            const valueData = [];
+            
+            let totalInvested = 0;
+            let totalValue = 0;
+            let currentSIP = monthlyInvestment;
+            
+            for (let year = 1; year <= years; year++) {
+                if (annualIncrement > 0) {
+                    // Calculate with increment
+                    const monthsInYear = 12;
+                    const totalMonths = years * 12;
+                    const remainingMonths = totalMonths - ((year - 1) * 12);
+                    const monthsToCalculate = Math.min(monthsInYear, remainingMonths);
+                    
+                    const yearInvested = currentSIP * monthsToCalculate;
+                    const yearValue = currentSIP * (((Math.pow(1 + monthlyRate, remainingMonths) - Math.pow(1 + monthlyRate, remainingMonths - monthsToCalculate)) / monthlyRate) * (1 + monthlyRate));
+                    
+                    totalInvested += yearInvested;
+                    totalValue += yearValue;
+                    
+                    currentSIP = currentSIP * (1 + annualIncrement);
+                } else {
+                    // Standard calculation
+                    const months = year * 12;
+                    totalInvested = monthlyInvestment * months;
+                    totalValue = monthlyInvestment * (((Math.pow(1 + monthlyRate, months) - 1) / monthlyRate) * (1 + monthlyRate));
+                }
+                
+                labels.push(`Year ${year}`);
+                investedData.push(Math.round(totalInvested));
+                valueData.push(Math.round(totalValue));
+            }
+            
+            sipChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Amount Invested',
+                        data: investedData,
+                        borderColor: '#3b82f6',
+                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                        tension: 0.4
+                    }, {
+                        label: 'Investment Value',
+                        data: valueData,
+                        borderColor: '#10b981',
+                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: annualIncrement > 0 ? `SIP Growth with ${(annualIncrement * 100).toFixed(1)}% Annual Increment` : 'SIP Growth Over Time'
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return '₹' + value.toLocaleString('en-IN');
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Create Lumpsum Growth Chart
+        function createLumpsumChart(principal, rate, years) {
+            const ctx = document.getElementById('lumpsumChart').getContext('2d');
+            
+            if (lumpsumChart) {
+                lumpsumChart.destroy();
+            }
+            
+            const labels = [];
+            const valueData = [];
+            
+            for (let year = 1; year <= years; year++) {
+                const value = principal * Math.pow(1 + rate, year);
+                labels.push(`Year ${year}`);
+                valueData.push(value);
+            }
+            
+            lumpsumChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Investment Value',
+                        data: valueData,
+                        borderColor: '#8b5cf6',
+                        backgroundColor: 'rgba(139, 92, 246, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Lumpsum Growth Over Time'
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return '₹' + value.toLocaleString('en-IN');
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'969fef3be3af5e9f',t:'MTc1NDMzMDIxOS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
