@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Financial Calculators Hub</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .tab-button.active {
+            background-color: #3b82f6;
+            color: white;
+        }
+        .calculator-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .result-card {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen">
+    <div class="container mx-auto px-4 py-8">
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <h1 class="text-4xl font-bold text-gray-800 mb-2">💰 Financial Calculators Hub</h1>
+            <p class="text-gray-600">Plan your investments and loans with precision</p>
+        </div>
+
+        <!-- Tab Navigation -->
+        <div class="grid grid-cols-2 gap-3 md:flex md:flex-wrap md:justify-center mb-8 bg-white rounded-lg shadow-lg p-4">
+            <button class="tab-button px-3 py-3 md:px-4 md:py-2 md:m-1 rounded-lg font-medium transition-all duration-300 active text-sm md:text-base" onclick="showTab('sip')">
+                📈 SIP Calculator
+            </button>
+            <button class="tab-button px-3 py-3 md:px-4 md:py-2 md:m-1 rounded-lg font-medium transition-all duration-300 text-sm md:text-base" onclick="showTab('lumpsum')">
+                💎 Lumpsum Calculator
+            </button>
+            <button class="tab-button px-3 py-3 md:px-4 md:py-2 md:m-1 rounded-lg font-medium transition-all duration-300 text-sm md:text-base" onclick="showTab('emi-floating')">
+                🏠 EMI (Floating Rate)
+            </button>
+            <button class="tab-button px-3 py-3 md:px-4 md:py-2 md:m-1 rounded-lg font-medium transition-all duration-300 text-sm md:text-base" onclick="showTab('emi-flat')">
+                🏦 EMI (Flat Rate)
+            </button>
+        </div>
+
+        <!-- SIP Calculator -->
+        <div id="sip" class="tab-content active">
+            <div class="grid grid-cols-1 xl:grid-cols-2 gap-6 md:gap-8">
+                <div class="calculator-card rounded-xl shadow-xl p-4 md:p-6 text-white">
+                    <h2 class="text-xl md:text-2xl font-bold mb-4 md:mb-6 flex items-center">
+                        📈 SIP Calculator
+                    </h2>
+                    <form id="sipForm" class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Monthly Investment Amount (₹)</label>
+                            <input type="number" id="sipAmount" class="w-full px-3 md:px-4 py-2 md:py-3 rounded-lg text-gray-800 border-0 focus:ring-2 focus:ring-blue-300 text-sm md:text-base" placeholder="5000" required>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Expected Annual Return Rate (%)</label>
+                            <input type="number" id="sipRate" step="0.1" class="w-full px-3 md:px-4 py-2 md:py-3 rounded-lg text-gray-800 border-0 focus:ring-2 focus:ring-blue-300 text-sm md:text-base" placeholder="12" required>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Investment Duration (Years)</label>
+                            <input type="number" id="sipYears" class="w-full px-3 md:px-4 py-2 md:py-3 rounded-lg text-gray-800 border-0 focus:ring-2 focus:ring-blue-300 text-sm md:text-base" placeholder="10" required>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Annual SIP Increment (%) - Optional</label>
+                            <input type="number" id="sipIncrement" step="0.1" class="w-full px-3 md:px-4 py-2 md:py-3 rounded-lg text-gray-800 border-0 focus:ring-2 focus:ring-blue-300 text-sm md:text-base" placeholder="0">
+                            <p class="text-xs mt-1 opacity-75">Leave blank or enter 0 for no increment</p>
+                        </div>
+                        <button type="submit" class="w-full bg-white text-blue-600 font-bold py-2 md:py-3 px-4 md:px-6 rounded-lg hover:bg-gray-100 transition-colors duration-300 text-sm md:text-base">
+                            Calculate SIP Returns
+                        </button>
+                    </form>
+                </div>
+                
+                <div class="space-y-4 md:space-y-6">
+                    <div id="sipResult" class="result-card rounded-xl shadow-xl p-4 md:p-6 text-white hidden">
+                        <h3 class="text-lg md:text-xl font-bold mb-3 md:mb-4">📊 SIP Results</h3>
+                        <div class="space-y-2 md:space-y-3">
+                            <div class="flex justify-between text-sm md:text-base">
+                                <span>Total Investment:</span>
+                                <span id="sipInvested" class="font-bold"></span>
+                            </div>
+                            <div class="flex justify-between text-sm md:text-base">
+                                <span>Total Returns:</span>
+                                <span id="sipReturns" class="font-bold"></span>
+                            </div>
+                            <div class="flex justify-between text-base md:text-lg border-t pt-2 font-bold">
+                                <span>Maturity Value:</span>
+                                <span id="sipMaturity" class="font-bold"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-xl shadow-xl p-3 md:p-6">
+                        <canvas id="sipChart" class="w-full h-64 md:h-80"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Lumpsum Calculator -->
+        <div id="lumpsum" class="tab-content">
+            <div class="grid grid-cols-1 xl:grid-cols-2 gap-6 md:gap-8">
+                <div class="calculator-card rounded-xl shadow-xl p-4 md:p-6 text-white">
+                    <h2 class="text-xl md:text-2xl font-bold mb-4 md:mb-6 flex items-center">
+                        💎 Lumpsum Calculator
+                    </h2>
+                    <form id="lumpsumForm" class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Investment Amount (₹)</label>
+                            <input type="number" id="lumpsumAmount" class="w-full px-3 md:px-4 py-2 md:py-3 rounded-lg text-gray-800 border-0 focus:ring-2 focus:ring-blue-300 text-sm md:text-base" placeholder="100000" required>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Expected Annual Return Rate (%)</label>
+                            <input type="number" id="lumpsumRate" step="0.1" class="w-full px-3 md:px-4 py-2 md:py-3 rounded-lg text-gray-800 border-0 focus:ring-2 focus:ring-blue-300 text-sm md:text-base" placeholder="12" required>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Time Period (Years)</label>
+                            <input type="number" id="lumpsumYears" class="w-full px-3 md:px-4 py-2 md:py-3 rounded-lg text-gray-800 border-0 focus:ring-2 focus:ring-blue-300 text-sm md:text-base" placeholder="10" required>
+                        </div>
+                        <button type="submit" class="w-full bg-white text-blue-600 font-bold py-2 md:py-3 px-4 md:px-6 rounded-lg hover:bg-gray-100 transition-colors duration-300 text-sm md:text-base">
+                            Calculate Lumpsum Returns
+                        </button>
+                    </form>
+                </div>
+                
+                <div class="space-y-4 md:space-y-6">
+                    <div id="lumpsumResult" class="result-card rounded-xl shadow-xl p-4 md:p-6 text-white hidden">
+                        <h3 class="text-lg md:text-xl font-bold mb-3 md:mb-4">📊 Lumpsum Results</h3>
+                        <div class="space-y-2 md:space-y-3">
+                            <div class="flex justify-between text-sm md:text-base">
+                                <span>Initial Investment:</span>
+                                <span id="lumpsumInvested" class="font-bold"></span>
+                            </div>
+                            <div class="flex justify-between text-sm md:text-base">
+                                <span>Total Returns:</span>
+                                <span id="lumpsumReturns" class="font-bold"></span>
+                            </div>
+                            <div class="flex justify-between text-base md:text-lg border-t pt-2 font-bold">
+                                <span>Maturity Value:</span>
+                                <span id="lumpsumMaturity" class="font-bold"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-xl shadow-xl p-3 md:p-6">
+                        <canvas id="lumpsumChart" class="w-full h-64 md:h-80"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- EMI Calculator (Floating Rate) -->
+        <div id="emi-floating" class="tab-content">
+            <div class="max-w-4xl mx-auto">
+                <div class="calculator-card rounded-xl shadow-xl p-4 md:p-6 text-white">
+                    <h2 class="text-lg md:text-2xl font-bold mb-4 md:mb-6 flex items-center">
+                        🏠 EMI Calculator (Floating Interest Rate)
+                    </h2>
+                    <form id="emiFloatingForm" class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Loan Amount (₹)</label>
+                            <input type="number" id="floatingLoanAmount" class="w-full px-3 md:px-4 py-2 md:py-3 rounded-lg text-gray-800 border-0 focus:ring-2 focus:ring-blue-300 text-sm md:text-base" placeholder="1000000" required>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Annual Interest Rate (%)</label>
+                            <input type="number" id="floatingRate" step="0.1" class="w-full px-3 md:px-4 py-2 md:py-3 rounded-lg text-gray-800 border-0 focus:ring-2 focus:ring-blue-300 text-sm md:text-base" placeholder="8.5" required>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Loan Tenure (Months)</label>
+                            <input type="number" id="floatingTenure" class="w-full px-3 md:px-4 py-2 md:py-3 rounded-lg text-gray-800 border-0 focus:ring-2 focus:ring-blue-300 text-sm md:text-base" placeholder="240" required>
+                        </div>
+                        <div class="flex items-end">
+                            <button type="submit" class="w-full bg-white text-blue-600 font-bold py-2 md:py-3 px-4 md:px-6 rounded-lg hover:bg-gray-100 transition-colors duration-300 text-sm md:text-base">
+                                Calculate EMI
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                
+                <div id="floatingResult" class="result-card rounded-xl shadow-xl p-4 md:p-6 text-white mt-6 md:mt-8 hidden">
+                    <h3 class="text-lg md:text-xl font-bold mb-3 md:mb-4">📊 EMI Calculation Results</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4">
+                        <div class="text-center bg-white bg-opacity-20 rounded-lg p-3">
+                            <div class="text-lg md:text-2xl font-bold" id="floatingEMI"></div>
+                            <div class="text-xs md:text-sm opacity-80">Monthly EMI</div>
+                        </div>
+                        <div class="text-center bg-white bg-opacity-20 rounded-lg p-3">
+                            <div class="text-lg md:text-2xl font-bold" id="floatingTotalInterest"></div>
+                            <div class="text-xs md:text-sm opacity-80">Total Interest</div>
+                        </div>
+                        <div class="text-center bg-white bg-opacity-20 rounded-lg p-3">
+                            <div class="text-lg md:text-2xl font-bold" id="floatingTotalAmount"></div>
+                            <div class="text-xs md:text-sm opacity-80">Total Amount</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- EMI Calculator (Flat Rate) -->
+        <div id="emi-flat" class="tab-content">
+            <div class="max-w-4xl mx-auto">
+                <div class="calculator-card rounded-xl shadow-xl p-4 md:p-6 text-white">
+                    <h2 class="text-lg md:text-2xl font-bold mb-4 md:mb-6 flex items-center">
+                        🏦 EMI Calculator (Flat Interest Rate)
+                    </h2>
+                    <form id="emiFlatForm" class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Loan Amount (₹)</label>
+                            <input type="number" id="flatLoanAmount" class="w-full px-3 md:px-4 py-2 md:py-3 rounded-lg text-gray-800 border-0 focus:ring-2 focus:ring-blue-300 text-sm md:text-base" placeholder="1000000" required>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Annual Interest Rate (%)</label>
+                            <input type="number" id="flatRate" step="0.1" class="w-full px-3 md:px-4 py-2 md:py-3 rounded-lg text-gray-800 border-0 focus:ring-2 focus:ring-blue-300 text-sm md:text-base" placeholder="8.5" required>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Loan Tenure (Months)</label>
+                            <input type="number" id="flatTenure" class="w-full px-3 md:px-4 py-2 md:py-3 rounded-lg text-gray-800 border-0 focus:ring-2 focus:ring-blue-300 text-sm md:text-base" placeholder="240" required>
+                        </div>
+                        <div class="flex items-end">
+                            <button type="submit" class="w-full bg-white text-blue-600 font-bold py-2 md:py-3 px-4 md:px-6 rounded-lg hover:bg-gray-100 transition-colors duration-300 text-sm md:text-base">
+                                Calculate EMI
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                
+                <div id="flatResult" class="result-card rounded-xl shadow-xl p-4 md:p-6 text-white mt-6 md:mt-8 hidden">
+                    <h3 class="text-lg md:text-xl font-bold mb-3 md:mb-4">📊 EMI Calculation Results</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4">
+                        <div class="text-center bg-white bg-opacity-20 rounded-lg p-3">
+                            <div class="text-lg md:text-2xl font-bold" id="flatEMI"></div>
+                            <div class="text-xs md:text-sm opacity-80">Monthly EMI</div>
+                        </div>
+                        <div class="text-center bg-white bg-opacity-20 rounded-lg p-3">
+                            <div class="text-lg md:text-2xl font-bold" id="flatTotalInterest"></div>
+                            <div class="text-xs md:text-sm opacity-80">Total Interest</div>
+                        </div>
+                        <div class="text-center bg-white bg-opacity-20 rounded-lg p-3">
+                            <div class="text-lg md:text-2xl font-bold" id="flatTotalAmount"></div>
+                            <div class="text-xs md:text-sm opacity-80">Total Amount</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let sipChart, lumpsumChart;
+
+        // Tab switching functionality
+        function showTab(tabName) {
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Remove active class from all buttons
+            document.querySelectorAll('.tab-button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Show selected tab
+            document.getElementById(tabName).classList.add('active');
+            
+            // Add active class to clicked button
+            event.target.classList.add('active');
+        }
+
+        // Format currency
+        function formatCurrency(amount) {
+            return '₹' + amount.toLocaleString('en-IN');
+        }
+
+        // SIP Calculator
+        document.getElementById('sipForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const P = parseFloat(document.getElementById('sipAmount').value);
+            const r = parseFloat(document.getElementById('sipRate').value) / 100;
+            const n = parseFloat(document.getElementById('sipYears').value);
+            const increment = parseFloat(document.getElementById('sipIncrement').value) || 0;
+            
+            if (P <= 0 || r <= 0 || n <= 0) {
+                alert('Please enter valid positive values');
+                return;
+            }
+            
+            const monthlyRate = r / 12;
+            const totalMonths = n * 12;
+            const annualIncrement = increment / 100;
+            
+            let futureValue = 0;
+            let totalInvested = 0;
+            let currentSIP = P;
+            
+            if (increment > 0) {
+                // Calculate SIP with annual increment
+                for (let year = 1; year <= n; year++) {
+                    const monthsInYear = 12;
+                    const remainingMonths = totalMonths - ((year - 1) * 12);
+                    const monthsToCalculate = Math.min(monthsInYear, remainingMonths);
+                    
+                    // Calculate future value for this year's SIP amount
+                    const yearFV = currentSIP * (((Math.pow(1 + monthlyRate, remainingMonths) - Math.pow(1 + monthlyRate, remainingMonths - monthsToCalculate)) / monthlyRate) * (1 + monthlyRate));
+                    futureValue += yearFV;
+                    totalInvested += currentSIP * monthsToCalculate;
+                    
+                    // Increment SIP for next year
+                    currentSIP = currentSIP * (1 + annualIncrement);
+                }
+            } else {
+                // Standard SIP calculation without increment
+                futureValue = P * (((Math.pow(1 + monthlyRate, totalMonths) - 1) / monthlyRate) * (1 + monthlyRate));
+                totalInvested = P * totalMonths;
+            }
+            
+            const totalReturns = futureValue - totalInvested;
+            
+            document.getElementById('sipInvested').textContent = formatCurrency(Math.round(totalInvested));
+            document.getElementById('sipReturns').textContent = formatCurrency(Math.round(totalReturns));
+            document.getElementById('sipMaturity').textContent = formatCurrency(Math.round(fut
