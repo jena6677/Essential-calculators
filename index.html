@@ -23,6 +23,24 @@
         .result-card {
             background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
         }
+        .slider::-webkit-slider-thumb {
+            appearance: none;
+            height: 20px;
+            width: 20px;
+            border-radius: 50%;
+            background: #ffffff;
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+        }
+        .slider::-moz-range-thumb {
+            height: 20px;
+            width: 20px;
+            border-radius: 50%;
+            background: #ffffff;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+        }
     </style>
 </head>
 <body class="bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen">
@@ -58,25 +76,26 @@
                     </h2>
                     <form id="sipForm" class="space-y-4">
                         <div>
-                            <label class="block text-sm font-medium mb-2">Monthly Investment Amount (₹)</label>
-                            <input type="number" id="sipAmount" class="w-full px-3 md:px-4 py-2 md:py-3 rounded-lg text-gray-800 border-0 focus:ring-2 focus:ring-blue-300 text-sm md:text-base" placeholder="5000" required>
+                            <label class="block text-sm font-medium mb-2">Monthly Investment Amount: ₹<span id="sipAmountValue">5000</span></label>
+                            <input type="range" id="sipAmountSlider" min="500" max="100000" step="500" value="5000" class="w-full h-2 bg-white bg-opacity-30 rounded-lg appearance-none cursor-pointer slider mb-2">
+                            <input type="number" id="sipAmount" class="w-full px-3 md:px-4 py-2 md:py-3 rounded-lg text-gray-800 border-0 focus:ring-2 focus:ring-blue-300 text-sm md:text-base" value="5000" required>
                         </div>
                         <div>
-                            <label class="block text-sm font-medium mb-2">Expected Annual Return Rate (%)</label>
-                            <input type="number" id="sipRate" step="0.1" class="w-full px-3 md:px-4 py-2 md:py-3 rounded-lg text-gray-800 border-0 focus:ring-2 focus:ring-blue-300 text-sm md:text-base" placeholder="12" required>
+                            <label class="block text-sm font-medium mb-2">Expected Annual Return Rate: <span id="sipRateValue">12</span>%</label>
+                            <input type="range" id="sipRateSlider" min="1" max="30" step="0.5" value="12" class="w-full h-2 bg-white bg-opacity-30 rounded-lg appearance-none cursor-pointer slider mb-2">
+                            <input type="number" id="sipRate" step="0.1" class="w-full px-3 md:px-4 py-2 md:py-3 rounded-lg text-gray-800 border-0 focus:ring-2 focus:ring-blue-300 text-sm md:text-base" value="12" required>
                         </div>
                         <div>
-                            <label class="block text-sm font-medium mb-2">Investment Duration (Years)</label>
-                            <input type="number" id="sipYears" class="w-full px-3 md:px-4 py-2 md:py-3 rounded-lg text-gray-800 border-0 focus:ring-2 focus:ring-blue-300 text-sm md:text-base" placeholder="10" required>
+                            <label class="block text-sm font-medium mb-2">Investment Duration: <span id="sipYearsValue">10</span> Years</label>
+                            <input type="range" id="sipYearsSlider" min="1" max="40" step="1" value="10" class="w-full h-2 bg-white bg-opacity-30 rounded-lg appearance-none cursor-pointer slider mb-2">
+                            <input type="number" id="sipYears" class="w-full px-3 md:px-4 py-2 md:py-3 rounded-lg text-gray-800 border-0 focus:ring-2 focus:ring-blue-300 text-sm md:text-base" value="10" required>
                         </div>
                         <div>
-                            <label class="block text-sm font-medium mb-2">Annual SIP Increment (%) - Optional</label>
-                            <input type="number" id="sipIncrement" step="0.1" class="w-full px-3 md:px-4 py-2 md:py-3 rounded-lg text-gray-800 border-0 focus:ring-2 focus:ring-blue-300 text-sm md:text-base" placeholder="0">
-                            <p class="text-xs mt-1 opacity-75">Leave blank or enter 0 for no increment</p>
+                            <label class="block text-sm font-medium mb-2">Annual SIP Increment: <span id="sipIncrementValue">0</span>%</label>
+                            <input type="range" id="sipIncrementSlider" min="0" max="20" step="1" value="0" class="w-full h-2 bg-white bg-opacity-30 rounded-lg appearance-none cursor-pointer slider mb-2">
+                            <input type="number" id="sipIncrement" step="0.1" class="w-full px-3 md:px-4 py-2 md:py-3 rounded-lg text-gray-800 border-0 focus:ring-2 focus:ring-blue-300 text-sm md:text-base" value="0">
+                            <p class="text-xs mt-1 opacity-75">Set to 0 for no increment</p>
                         </div>
-                        <button type="submit" class="w-full bg-white text-blue-600 font-bold py-2 md:py-3 px-4 md:px-6 rounded-lg hover:bg-gray-100 transition-colors duration-300 text-sm md:text-base">
-                            Calculate SIP Returns
-                        </button>
                     </form>
                 </div>
                 
@@ -114,20 +133,20 @@
                     </h2>
                     <form id="lumpsumForm" class="space-y-4">
                         <div>
-                            <label class="block text-sm font-medium mb-2">Investment Amount (₹)</label>
-                            <input type="number" id="lumpsumAmount" class="w-full px-3 md:px-4 py-2 md:py-3 rounded-lg text-gray-800 border-0 focus:ring-2 focus:ring-blue-300 text-sm md:text-base" placeholder="100000" required>
+                            <label class="block text-sm font-medium mb-2">Investment Amount: ₹<span id="lumpsumAmountValue">100000</span></label>
+                            <input type="range" id="lumpsumAmountSlider" min="10000" max="10000000" step="10000" value="100000" class="w-full h-2 bg-white bg-opacity-30 rounded-lg appearance-none cursor-pointer slider mb-2">
+                            <input type="number" id="lumpsumAmount" class="w-full px-3 md:px-4 py-2 md:py-3 rounded-lg text-gray-800 border-0 focus:ring-2 focus:ring-blue-300 text-sm md:text-base" value="100000" required>
                         </div>
                         <div>
-                            <label class="block text-sm font-medium mb-2">Expected Annual Return Rate (%)</label>
-                            <input type="number" id="lumpsumRate" step="0.1" class="w-full px-3 md:px-4 py-2 md:py-3 rounded-lg text-gray-800 border-0 focus:ring-2 focus:ring-blue-300 text-sm md:text-base" placeholder="12" required>
+                            <label class="block text-sm font-medium mb-2">Expected Annual Return Rate: <span id="lumpsumRateValue">12</span>%</label>
+                            <input type="range" id="lumpsumRateSlider" min="1" max="30" step="0.5" value="12" class="w-full h-2 bg-white bg-opacity-30 rounded-lg appearance-none cursor-pointer slider mb-2">
+                            <input type="number" id="lumpsumRate" step="0.1" class="w-full px-3 md:px-4 py-2 md:py-3 rounded-lg text-gray-800 border-0 focus:ring-2 focus:ring-blue-300 text-sm md:text-base" value="12" required>
                         </div>
                         <div>
-                            <label class="block text-sm font-medium mb-2">Time Period (Years)</label>
-                            <input type="number" id="lumpsumYears" class="w-full px-3 md:px-4 py-2 md:py-3 rounded-lg text-gray-800 border-0 focus:ring-2 focus:ring-blue-300 text-sm md:text-base" placeholder="10" required>
+                            <label class="block text-sm font-medium mb-2">Time Period: <span id="lumpsumYearsValue">10</span> Years</label>
+                            <input type="range" id="lumpsumYearsSlider" min="1" max="40" step="1" value="10" class="w-full h-2 bg-white bg-opacity-30 rounded-lg appearance-none cursor-pointer slider mb-2">
+                            <input type="number" id="lumpsumYears" class="w-full px-3 md:px-4 py-2 md:py-3 rounded-lg text-gray-800 border-0 focus:ring-2 focus:ring-blue-300 text-sm md:text-base" value="10" required>
                         </div>
-                        <button type="submit" class="w-full bg-white text-blue-600 font-bold py-2 md:py-3 px-4 md:px-6 rounded-lg hover:bg-gray-100 transition-colors duration-300 text-sm md:text-base">
-                            Calculate Lumpsum Returns
-                        </button>
                     </form>
                 </div>
                 
@@ -163,23 +182,21 @@
                     <h2 class="text-lg md:text-2xl font-bold mb-4 md:mb-6 flex items-center">
                         🏠 EMI Calculator (Floating Interest Rate)
                     </h2>
-                    <form id="emiFloatingForm" class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+                    <form id="emiFloatingForm" class="grid grid-cols-1 gap-4 md:gap-6">
                         <div>
-                            <label class="block text-sm font-medium mb-2">Loan Amount (₹)</label>
-                            <input type="number" id="floatingLoanAmount" class="w-full px-3 md:px-4 py-2 md:py-3 rounded-lg text-gray-800 border-0 focus:ring-2 focus:ring-blue-300 text-sm md:text-base" placeholder="1000000" required>
+                            <label class="block text-sm font-medium mb-2">Loan Amount: ₹<span id="floatingLoanAmountValue">1000000</span></label>
+                            <input type="range" id="floatingLoanAmountSlider" min="100000" max="50000000" step="100000" value="1000000" class="w-full h-2 bg-white bg-opacity-30 rounded-lg appearance-none cursor-pointer slider mb-2">
+                            <input type="number" id="floatingLoanAmount" class="w-full px-3 md:px-4 py-2 md:py-3 rounded-lg text-gray-800 border-0 focus:ring-2 focus:ring-blue-300 text-sm md:text-base" value="1000000" required>
                         </div>
                         <div>
-                            <label class="block text-sm font-medium mb-2">Annual Interest Rate (%)</label>
-                            <input type="number" id="floatingRate" step="0.1" class="w-full px-3 md:px-4 py-2 md:py-3 rounded-lg text-gray-800 border-0 focus:ring-2 focus:ring-blue-300 text-sm md:text-base" placeholder="8.5" required>
+                            <label class="block text-sm font-medium mb-2">Annual Interest Rate: <span id="floatingRateValue">8.5</span>%</label>
+                            <input type="range" id="floatingRateSlider" min="3" max="20" step="0.1" value="8.5" class="w-full h-2 bg-white bg-opacity-30 rounded-lg appearance-none cursor-pointer slider mb-2">
+                            <input type="number" id="floatingRate" step="0.1" class="w-full px-3 md:px-4 py-2 md:py-3 rounded-lg text-gray-800 border-0 focus:ring-2 focus:ring-blue-300 text-sm md:text-base" value="8.5" required>
                         </div>
                         <div>
-                            <label class="block text-sm font-medium mb-2">Loan Tenure (Months)</label>
-                            <input type="number" id="floatingTenure" class="w-full px-3 md:px-4 py-2 md:py-3 rounded-lg text-gray-800 border-0 focus:ring-2 focus:ring-blue-300 text-sm md:text-base" placeholder="240" required>
-                        </div>
-                        <div class="flex items-end">
-                            <button type="submit" class="w-full bg-white text-blue-600 font-bold py-2 md:py-3 px-4 md:px-6 rounded-lg hover:bg-gray-100 transition-colors duration-300 text-sm md:text-base">
-                                Calculate EMI
-                            </button>
+                            <label class="block text-sm font-medium mb-2">Loan Tenure: <span id="floatingTenureValue">240</span> Months</label>
+                            <input type="range" id="floatingTenureSlider" min="12" max="360" step="12" value="240" class="w-full h-2 bg-white bg-opacity-30 rounded-lg appearance-none cursor-pointer slider mb-2">
+                            <input type="number" id="floatingTenure" class="w-full px-3 md:px-4 py-2 md:py-3 rounded-lg text-gray-800 border-0 focus:ring-2 focus:ring-blue-300 text-sm md:text-base" value="240" required>
                         </div>
                     </form>
                 </div>
@@ -211,23 +228,21 @@
                     <h2 class="text-lg md:text-2xl font-bold mb-4 md:mb-6 flex items-center">
                         🏦 EMI Calculator (Flat Interest Rate)
                     </h2>
-                    <form id="emiFlatForm" class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+                    <form id="emiFlatForm" class="grid grid-cols-1 gap-4 md:gap-6">
                         <div>
-                            <label class="block text-sm font-medium mb-2">Loan Amount (₹)</label>
-                            <input type="number" id="flatLoanAmount" class="w-full px-3 md:px-4 py-2 md:py-3 rounded-lg text-gray-800 border-0 focus:ring-2 focus:ring-blue-300 text-sm md:text-base" placeholder="1000000" required>
+                            <label class="block text-sm font-medium mb-2">Loan Amount: ₹<span id="flatLoanAmountValue">1000000</span></label>
+                            <input type="range" id="flatLoanAmountSlider" min="100000" max="50000000" step="100000" value="1000000" class="w-full h-2 bg-white bg-opacity-30 rounded-lg appearance-none cursor-pointer slider mb-2">
+                            <input type="number" id="flatLoanAmount" class="w-full px-3 md:px-4 py-2 md:py-3 rounded-lg text-gray-800 border-0 focus:ring-2 focus:ring-blue-300 text-sm md:text-base" value="1000000" required>
                         </div>
                         <div>
-                            <label class="block text-sm font-medium mb-2">Annual Interest Rate (%)</label>
-                            <input type="number" id="flatRate" step="0.1" class="w-full px-3 md:px-4 py-2 md:py-3 rounded-lg text-gray-800 border-0 focus:ring-2 focus:ring-blue-300 text-sm md:text-base" placeholder="8.5" required>
+                            <label class="block text-sm font-medium mb-2">Annual Interest Rate: <span id="flatRateValue">8.5</span>%</label>
+                            <input type="range" id="flatRateSlider" min="3" max="20" step="0.1" value="8.5" class="w-full h-2 bg-white bg-opacity-30 rounded-lg appearance-none cursor-pointer slider mb-2">
+                            <input type="number" id="flatRate" step="0.1" class="w-full px-3 md:px-4 py-2 md:py-3 rounded-lg text-gray-800 border-0 focus:ring-2 focus:ring-blue-300 text-sm md:text-base" value="8.5" required>
                         </div>
                         <div>
-                            <label class="block text-sm font-medium mb-2">Loan Tenure (Months)</label>
-                            <input type="number" id="flatTenure" class="w-full px-3 md:px-4 py-2 md:py-3 rounded-lg text-gray-800 border-0 focus:ring-2 focus:ring-blue-300 text-sm md:text-base" placeholder="240" required>
-                        </div>
-                        <div class="flex items-end">
-                            <button type="submit" class="w-full bg-white text-blue-600 font-bold py-2 md:py-3 px-4 md:px-6 rounded-lg hover:bg-gray-100 transition-colors duration-300 text-sm md:text-base">
-                                Calculate EMI
-                            </button>
+                            <label class="block text-sm font-medium mb-2">Loan Tenure: <span id="flatTenureValue">240</span> Months</label>
+                            <input type="range" id="flatTenureSlider" min="12" max="360" step="12" value="240" class="w-full h-2 bg-white bg-opacity-30 rounded-lg appearance-none cursor-pointer slider mb-2">
+                            <input type="number" id="flatTenure" class="w-full px-3 md:px-4 py-2 md:py-3 rounded-lg text-gray-800 border-0 focus:ring-2 focus:ring-blue-300 text-sm md:text-base" value="240" required>
                         </div>
                     </form>
                 </div>
@@ -280,17 +295,14 @@
             return '₹' + amount.toLocaleString('en-IN');
         }
 
-        // SIP Calculator
-        document.getElementById('sipForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
+        // SIP Calculator Function
+        function calculateSIP() {
             const P = parseFloat(document.getElementById('sipAmount').value);
             const r = parseFloat(document.getElementById('sipRate').value) / 100;
             const n = parseFloat(document.getElementById('sipYears').value);
             const increment = parseFloat(document.getElementById('sipIncrement').value) || 0;
             
             if (P <= 0 || r <= 0 || n <= 0) {
-                alert('Please enter valid positive values');
                 return;
             }
             
@@ -332,18 +344,81 @@
             
             // Create SIP growth chart
             createSIPChart(P, monthlyRate, n, annualIncrement);
+        }
+
+        // SIP Slider Event Listeners
+        document.getElementById('sipAmountSlider').addEventListener('input', function() {
+            const value = this.value;
+            document.getElementById('sipAmountValue').textContent = parseInt(value).toLocaleString('en-IN');
+            document.getElementById('sipAmount').value = value;
+            calculateSIP();
         });
 
-        // Lumpsum Calculator
-        document.getElementById('lumpsumForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
+        document.getElementById('sipRateSlider').addEventListener('input', function() {
+            const value = this.value;
+            document.getElementById('sipRateValue').textContent = value;
+            document.getElementById('sipRate').value = value;
+            calculateSIP();
+        });
+
+        document.getElementById('sipYearsSlider').addEventListener('input', function() {
+            const value = this.value;
+            document.getElementById('sipYearsValue').textContent = value;
+            document.getElementById('sipYears').value = value;
+            calculateSIP();
+        });
+
+        document.getElementById('sipIncrementSlider').addEventListener('input', function() {
+            const value = this.value;
+            document.getElementById('sipIncrementValue').textContent = value;
+            document.getElementById('sipIncrement').value = value;
+            calculateSIP();
+        });
+
+        // SIP Input Field Event Listeners
+        document.getElementById('sipAmount').addEventListener('input', function() {
+            const value = this.value;
+            document.getElementById('sipAmountSlider').value = value;
+            document.getElementById('sipAmountValue').textContent = parseInt(value).toLocaleString('en-IN');
+            calculateSIP();
+        });
+
+        document.getElementById('sipRate').addEventListener('input', function() {
+            const value = this.value;
+            document.getElementById('sipRateSlider').value = value;
+            document.getElementById('sipRateValue').textContent = value;
+            calculateSIP();
+        });
+
+        document.getElementById('sipYears').addEventListener('input', function() {
+            const value = this.value;
+            document.getElementById('sipYearsSlider').value = value;
+            document.getElementById('sipYearsValue').textContent = value;
+            calculateSIP();
+        });
+
+        document.getElementById('sipIncrement').addEventListener('input', function() {
+            const value = this.value;
+            document.getElementById('sipIncrementSlider').value = value;
+            document.getElementById('sipIncrementValue').textContent = value;
+            calculateSIP();
+        });
+
+        // Initialize all calculations on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            calculateSIP();
+            calculateLumpsum();
+            calculateFloatingEMI();
+            calculateFlatEMI();
+        });
+
+        // Lumpsum Calculator Function
+        function calculateLumpsum() {
             const P = parseFloat(document.getElementById('lumpsumAmount').value);
             const r = parseFloat(document.getElementById('lumpsumRate').value) / 100;
             const t = parseFloat(document.getElementById('lumpsumYears').value);
             
             if (P <= 0 || r <= 0 || t <= 0) {
-                alert('Please enter valid positive values');
                 return;
             }
             
@@ -358,18 +433,59 @@
             
             // Create Lumpsum growth chart
             createLumpsumChart(P, r, t);
+        }
+
+        // Lumpsum Slider Event Listeners
+        document.getElementById('lumpsumAmountSlider').addEventListener('input', function() {
+            const value = this.value;
+            document.getElementById('lumpsumAmountValue').textContent = parseInt(value).toLocaleString('en-IN');
+            document.getElementById('lumpsumAmount').value = value;
+            calculateLumpsum();
         });
 
-        // EMI Calculator (Floating Rate)
-        document.getElementById('emiFloatingForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
+        document.getElementById('lumpsumRateSlider').addEventListener('input', function() {
+            const value = this.value;
+            document.getElementById('lumpsumRateValue').textContent = value;
+            document.getElementById('lumpsumRate').value = value;
+            calculateLumpsum();
+        });
+
+        document.getElementById('lumpsumYearsSlider').addEventListener('input', function() {
+            const value = this.value;
+            document.getElementById('lumpsumYearsValue').textContent = value;
+            document.getElementById('lumpsumYears').value = value;
+            calculateLumpsum();
+        });
+
+        // Lumpsum Input Field Event Listeners
+        document.getElementById('lumpsumAmount').addEventListener('input', function() {
+            const value = this.value;
+            document.getElementById('lumpsumAmountSlider').value = value;
+            document.getElementById('lumpsumAmountValue').textContent = parseInt(value).toLocaleString('en-IN');
+            calculateLumpsum();
+        });
+
+        document.getElementById('lumpsumRate').addEventListener('input', function() {
+            const value = this.value;
+            document.getElementById('lumpsumRateSlider').value = value;
+            document.getElementById('lumpsumRateValue').textContent = value;
+            calculateLumpsum();
+        });
+
+        document.getElementById('lumpsumYears').addEventListener('input', function() {
+            const value = this.value;
+            document.getElementById('lumpsumYearsSlider').value = value;
+            document.getElementById('lumpsumYearsValue').textContent = value;
+            calculateLumpsum();
+        });
+
+        // EMI Calculator (Floating Rate) Function
+        function calculateFloatingEMI() {
             const P = parseFloat(document.getElementById('floatingLoanAmount').value);
             const r = parseFloat(document.getElementById('floatingRate').value) / 100 / 12;
             const n = parseFloat(document.getElementById('floatingTenure').value);
             
             if (P <= 0 || r <= 0 || n <= 0) {
-                alert('Please enter valid positive values');
                 return;
             }
             
@@ -382,18 +498,59 @@
             document.getElementById('floatingTotalInterest').textContent = formatCurrency(Math.round(totalInterest));
             document.getElementById('floatingTotalAmount').textContent = formatCurrency(Math.round(totalAmount));
             document.getElementById('floatingResult').classList.remove('hidden');
+        }
+
+        // Floating EMI Slider Event Listeners
+        document.getElementById('floatingLoanAmountSlider').addEventListener('input', function() {
+            const value = this.value;
+            document.getElementById('floatingLoanAmountValue').textContent = parseInt(value).toLocaleString('en-IN');
+            document.getElementById('floatingLoanAmount').value = value;
+            calculateFloatingEMI();
         });
 
-        // EMI Calculator (Flat Rate)
-        document.getElementById('emiFlatForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
+        document.getElementById('floatingRateSlider').addEventListener('input', function() {
+            const value = this.value;
+            document.getElementById('floatingRateValue').textContent = value;
+            document.getElementById('floatingRate').value = value;
+            calculateFloatingEMI();
+        });
+
+        document.getElementById('floatingTenureSlider').addEventListener('input', function() {
+            const value = this.value;
+            document.getElementById('floatingTenureValue').textContent = value;
+            document.getElementById('floatingTenure').value = value;
+            calculateFloatingEMI();
+        });
+
+        // Floating EMI Input Field Event Listeners
+        document.getElementById('floatingLoanAmount').addEventListener('input', function() {
+            const value = this.value;
+            document.getElementById('floatingLoanAmountSlider').value = value;
+            document.getElementById('floatingLoanAmountValue').textContent = parseInt(value).toLocaleString('en-IN');
+            calculateFloatingEMI();
+        });
+
+        document.getElementById('floatingRate').addEventListener('input', function() {
+            const value = this.value;
+            document.getElementById('floatingRateSlider').value = value;
+            document.getElementById('floatingRateValue').textContent = value;
+            calculateFloatingEMI();
+        });
+
+        document.getElementById('floatingTenure').addEventListener('input', function() {
+            const value = this.value;
+            document.getElementById('floatingTenureSlider').value = value;
+            document.getElementById('floatingTenureValue').textContent = value;
+            calculateFloatingEMI();
+        });
+
+        // EMI Calculator (Flat Rate) Function
+        function calculateFlatEMI() {
             const P = parseFloat(document.getElementById('flatLoanAmount').value);
             const r = parseFloat(document.getElementById('flatRate').value);
             const n = parseFloat(document.getElementById('flatTenure').value);
             
             if (P <= 0 || r <= 0 || n <= 0) {
-                alert('Please enter valid positive values');
                 return;
             }
             
@@ -408,6 +565,50 @@
             document.getElementById('flatTotalInterest').textContent = formatCurrency(Math.round(totalInterest));
             document.getElementById('flatTotalAmount').textContent = formatCurrency(Math.round(totalAmount));
             document.getElementById('flatResult').classList.remove('hidden');
+        }
+
+        // Flat EMI Slider Event Listeners
+        document.getElementById('flatLoanAmountSlider').addEventListener('input', function() {
+            const value = this.value;
+            document.getElementById('flatLoanAmountValue').textContent = parseInt(value).toLocaleString('en-IN');
+            document.getElementById('flatLoanAmount').value = value;
+            calculateFlatEMI();
+        });
+
+        document.getElementById('flatRateSlider').addEventListener('input', function() {
+            const value = this.value;
+            document.getElementById('flatRateValue').textContent = value;
+            document.getElementById('flatRate').value = value;
+            calculateFlatEMI();
+        });
+
+        document.getElementById('flatTenureSlider').addEventListener('input', function() {
+            const value = this.value;
+            document.getElementById('flatTenureValue').textContent = value;
+            document.getElementById('flatTenure').value = value;
+            calculateFlatEMI();
+        });
+
+        // Flat EMI Input Field Event Listeners
+        document.getElementById('flatLoanAmount').addEventListener('input', function() {
+            const value = this.value;
+            document.getElementById('flatLoanAmountSlider').value = value;
+            document.getElementById('flatLoanAmountValue').textContent = parseInt(value).toLocaleString('en-IN');
+            calculateFlatEMI();
+        });
+
+        document.getElementById('flatRate').addEventListener('input', function() {
+            const value = this.value;
+            document.getElementById('flatRateSlider').value = value;
+            document.getElementById('flatRateValue').textContent = value;
+            calculateFlatEMI();
+        });
+
+        document.getElementById('flatTenure').addEventListener('input', function() {
+            const value = this.value;
+            document.getElementById('flatTenureSlider').value = value;
+            document.getElementById('flatTenureValue').textContent = value;
+            calculateFlatEMI();
         });
 
         // Create SIP Growth Chart
@@ -547,5 +748,5 @@
             });
         }
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'969fef3be3af5e9f',t:'MTc1NDMzMDIxOS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'96a42ad9d54d54c6',t:'MTc1NDM3NDYwNC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
