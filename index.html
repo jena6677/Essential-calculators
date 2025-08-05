@@ -118,7 +118,36 @@
                         </div>
                     </div>
                     <div class="bg-white rounded-xl shadow-xl p-3 md:p-6">
-                        <canvas id="sipChart" class="w-full h-64 md:h-80"></canvas>
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-lg font-semibold text-gray-800">Investment Growth</h3>
+                            <div class="flex items-center space-x-2">
+                                <span class="text-sm text-gray-600">Chart</span>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" id="sipToggle" class="sr-only peer">
+                                    <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                                </label>
+                                <span class="text-sm text-gray-600">Table</span>
+                            </div>
+                        </div>
+                        <div id="sipChartView">
+                            <canvas id="sipChart" class="w-full h-64 md:h-80"></canvas>
+                        </div>
+                        <div id="sipTableView" class="hidden">
+                            <div class="h-64 md:h-80 overflow-y-auto">
+                                <table class="w-full text-sm">
+                                    <thead class="bg-gray-50 sticky top-0">
+                                        <tr>
+                                            <th class="px-3 py-2 text-left text-gray-700 font-medium">Month</th>
+                                            <th class="px-3 py-2 text-right text-gray-700 font-medium">Monthly SIP</th>
+                                            <th class="px-3 py-2 text-right text-gray-700 font-medium">Total Invested</th>
+                                            <th class="px-3 py-2 text-right text-gray-700 font-medium">Current Value</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="sipTableBody" class="divide-y divide-gray-200">
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -169,7 +198,36 @@
                         </div>
                     </div>
                     <div class="bg-white rounded-xl shadow-xl p-3 md:p-6">
-                        <canvas id="lumpsumChart" class="w-full h-64 md:h-80"></canvas>
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-lg font-semibold text-gray-800">Investment Growth</h3>
+                            <div class="flex items-center space-x-2">
+                                <span class="text-sm text-gray-600">Chart</span>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" id="lumpsumToggle" class="sr-only peer">
+                                    <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                                </label>
+                                <span class="text-sm text-gray-600">Table</span>
+                            </div>
+                        </div>
+                        <div id="lumpsumChartView">
+                            <canvas id="lumpsumChart" class="w-full h-64 md:h-80"></canvas>
+                        </div>
+                        <div id="lumpsumTableView" class="hidden">
+                            <div class="h-64 md:h-80 overflow-y-auto">
+                                <table class="w-full text-sm">
+                                    <thead class="bg-gray-50 sticky top-0">
+                                        <tr>
+                                            <th class="px-3 py-2 text-left text-gray-700 font-medium">Month</th>
+                                            <th class="px-3 py-2 text-right text-gray-700 font-medium">Monthly Growth</th>
+                                            <th class="px-3 py-2 text-right text-gray-700 font-medium">Current Value</th>
+                                            <th class="px-3 py-2 text-right text-gray-700 font-medium">Total Returns</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="lumpsumTableBody" class="divide-y divide-gray-200">
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -404,6 +462,35 @@
             calculateSIP();
         });
 
+        // Toggle Event Listeners
+        document.getElementById('sipToggle').addEventListener('change', function() {
+            const chartView = document.getElementById('sipChartView');
+            const tableView = document.getElementById('sipTableView');
+            
+            if (this.checked) {
+                chartView.classList.add('hidden');
+                tableView.classList.remove('hidden');
+                generateSIPTable();
+            } else {
+                chartView.classList.remove('hidden');
+                tableView.classList.add('hidden');
+            }
+        });
+
+        document.getElementById('lumpsumToggle').addEventListener('change', function() {
+            const chartView = document.getElementById('lumpsumChartView');
+            const tableView = document.getElementById('lumpsumTableView');
+            
+            if (this.checked) {
+                chartView.classList.add('hidden');
+                tableView.classList.remove('hidden');
+                generateLumpsumTable();
+            } else {
+                chartView.classList.remove('hidden');
+                tableView.classList.add('hidden');
+            }
+        });
+
         // Initialize all calculations on page load
         document.addEventListener('DOMContentLoaded', function() {
             calculateSIP();
@@ -611,6 +698,92 @@
             calculateFlatEMI();
         });
 
+        // Generate SIP Table
+        function generateSIPTable() {
+            const P = parseFloat(document.getElementById('sipAmount').value);
+            const r = parseFloat(document.getElementById('sipRate').value) / 100;
+            const n = parseFloat(document.getElementById('sipYears').value);
+            const increment = parseFloat(document.getElementById('sipIncrement').value) || 0;
+            
+            if (P <= 0 || r <= 0 || n <= 0) {
+                return;
+            }
+            
+            const monthlyRate = r / 12;
+            const totalMonths = n * 12;
+            const annualIncrement = increment / 100;
+            
+            const tableBody = document.getElementById('sipTableBody');
+            tableBody.innerHTML = '';
+            
+            let totalInvested = 0;
+            let currentValue = 0;
+            let currentSIP = P;
+            
+            for (let month = 1; month <= totalMonths; month++) {
+                // Adjust SIP amount annually
+                if (month > 1 && (month - 1) % 12 === 0 && annualIncrement > 0) {
+                    currentSIP = currentSIP * (1 + annualIncrement);
+                }
+                
+                totalInvested += currentSIP;
+                
+                // Calculate current value using compound interest
+                if (month === 1) {
+                    currentValue = currentSIP * (1 + monthlyRate);
+                } else {
+                    currentValue = (currentValue + currentSIP) * (1 + monthlyRate);
+                }
+                
+                const row = document.createElement('tr');
+                row.className = 'hover:bg-gray-50';
+                row.innerHTML = `
+                    <td class="px-3 py-2 text-gray-900">${month}</td>
+                    <td class="px-3 py-2 text-right text-gray-900">₹${Math.round(currentSIP).toLocaleString('en-IN')}</td>
+                    <td class="px-3 py-2 text-right text-gray-900">₹${Math.round(totalInvested).toLocaleString('en-IN')}</td>
+                    <td class="px-3 py-2 text-right text-green-600 font-medium">₹${Math.round(currentValue).toLocaleString('en-IN')}</td>
+                `;
+                tableBody.appendChild(row);
+            }
+        }
+
+        // Generate Lumpsum Table
+        function generateLumpsumTable() {
+            const P = parseFloat(document.getElementById('lumpsumAmount').value);
+            const r = parseFloat(document.getElementById('lumpsumRate').value) / 100;
+            const t = parseFloat(document.getElementById('lumpsumYears').value);
+            
+            if (P <= 0 || r <= 0 || t <= 0) {
+                return;
+            }
+            
+            const monthlyRate = r / 12;
+            const totalMonths = t * 12;
+            
+            const tableBody = document.getElementById('lumpsumTableBody');
+            tableBody.innerHTML = '';
+            
+            let previousValue = P;
+            
+            for (let month = 1; month <= totalMonths; month++) {
+                const currentValue = P * Math.pow(1 + monthlyRate, month);
+                const monthlyGrowth = currentValue - previousValue;
+                const totalReturns = currentValue - P;
+                
+                const row = document.createElement('tr');
+                row.className = 'hover:bg-gray-50';
+                row.innerHTML = `
+                    <td class="px-3 py-2 text-gray-900">${month}</td>
+                    <td class="px-3 py-2 text-right text-blue-600">₹${Math.round(monthlyGrowth).toLocaleString('en-IN')}</td>
+                    <td class="px-3 py-2 text-right text-gray-900">₹${Math.round(currentValue).toLocaleString('en-IN')}</td>
+                    <td class="px-3 py-2 text-right text-green-600 font-medium">₹${Math.round(totalReturns).toLocaleString('en-IN')}</td>
+                `;
+                tableBody.appendChild(row);
+                
+                previousValue = currentValue;
+            }
+        }
+
         // Create SIP Growth Chart
         function createSIPChart(monthlyInvestment, monthlyRate, years, annualIncrement = 0) {
             const ctx = document.getElementById('sipChart').getContext('2d');
@@ -748,5 +921,5 @@
             });
         }
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'96a42ad9d54d54c6',t:'MTc1NDM3NDYwNC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'96a43597d1fd1c61',t:'MTc1NDM3NTA0NC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
