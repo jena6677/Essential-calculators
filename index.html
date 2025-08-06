@@ -267,23 +267,86 @@
                             <input type="range" id="floatingTenureSlider" min="12" max="360" step="12" value="240" class="w-full h-2 bg-white bg-opacity-30 rounded-lg appearance-none cursor-pointer slider mb-2">
                             <input type="number" id="floatingTenure" class="w-full px-3 md:px-4 py-2 md:py-3 rounded-lg text-gray-800 border-0 focus:ring-2 focus:ring-blue-300 text-sm md:text-base" value="240" required>
                         </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Extra Annual Payment: ₹<span id="floatingExtraValue">0</span></label>
+                            <input type="range" id="floatingExtraSlider" min="0" max="500000" step="10000" value="0" class="w-full h-2 bg-white bg-opacity-30 rounded-lg appearance-none cursor-pointer slider mb-2">
+                            <input type="number" id="floatingExtra" class="w-full px-3 md:px-4 py-2 md:py-3 rounded-lg text-gray-800 border-0 focus:ring-2 focus:ring-blue-300 text-sm md:text-base" value="0">
+                            <p class="text-xs mt-1 opacity-75">Additional payment towards principal each year</p>
+                        </div>
                     </form>
                 </div>
                 
-                <div id="floatingResult" class="result-card rounded-xl shadow-xl p-4 md:p-6 text-white hidden">
-                    <h3 class="text-lg md:text-xl font-bold mb-3 md:mb-4">📊 EMI Calculation Results</h3>
-                    <div class="grid grid-cols-1 gap-3 md:gap-4">
-                        <div class="text-center bg-white bg-opacity-20 rounded-lg p-3">
-                            <div class="text-lg md:text-2xl font-bold" id="floatingEMI"></div>
-                            <div class="text-xs md:text-sm opacity-80">Monthly EMI</div>
+                <div class="space-y-4 md:space-y-6">
+                    <div id="floatingResult" class="result-card rounded-xl shadow-xl p-4 md:p-6 text-white hidden">
+                        <h3 class="text-lg md:text-xl font-bold mb-3 md:mb-4">📊 EMI Calculation Results</h3>
+                        <div class="grid grid-cols-1 gap-3 md:gap-4">
+                            <div class="text-center bg-white bg-opacity-20 rounded-lg p-3">
+                                <div class="text-lg md:text-2xl font-bold" id="floatingEMI"></div>
+                                <div class="text-xs md:text-sm opacity-80">Monthly EMI</div>
+                            </div>
+                            <div class="text-center bg-white bg-opacity-20 rounded-lg p-3">
+                                <div class="text-lg md:text-2xl font-bold" id="floatingTotalInterest"></div>
+                                <div class="text-xs md:text-sm opacity-80">Total Interest</div>
+                            </div>
+                            <div class="text-center bg-white bg-opacity-20 rounded-lg p-3">
+                                <div class="text-lg md:text-2xl font-bold" id="floatingTotalAmount"></div>
+                                <div class="text-xs md:text-sm opacity-80">Total Amount</div>
+                            </div>
+                            <div class="text-center bg-white bg-opacity-20 rounded-lg p-3">
+                                <div class="text-lg md:text-2xl font-bold" id="floatingActualTenure"></div>
+                                <div class="text-xs md:text-sm opacity-80">Actual Tenure</div>
+                            </div>
                         </div>
-                        <div class="text-center bg-white bg-opacity-20 rounded-lg p-3">
-                            <div class="text-lg md:text-2xl font-bold" id="floatingTotalInterest"></div>
-                            <div class="text-xs md:text-sm opacity-80">Total Interest</div>
+                    </div>
+                    
+                    <div class="bg-white rounded-xl shadow-xl p-3 md:p-6">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-lg font-semibold text-gray-800">EMI Payment Schedule</h3>
+                            <div class="flex items-center space-x-2">
+                                <span class="text-sm text-gray-600">Summary</span>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" id="floatingToggle" class="sr-only peer">
+                                    <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                                </label>
+                                <span class="text-sm text-gray-600">Detailed</span>
+                            </div>
                         </div>
-                        <div class="text-center bg-white bg-opacity-20 rounded-lg p-3">
-                            <div class="text-lg md:text-2xl font-bold" id="floatingTotalAmount"></div>
-                            <div class="text-xs md:text-sm opacity-80">Total Amount</div>
+                        <div id="floatingSummaryView">
+                            <div class="h-64 md:h-80 overflow-y-auto">
+                                <table class="w-full text-sm">
+                                    <thead class="bg-gray-50 sticky top-0">
+                                        <tr>
+                                            <th class="px-3 py-2 text-left text-gray-700 font-medium">Year</th>
+                                            <th class="px-3 py-2 text-right text-gray-700 font-medium">EMI Paid</th>
+                                            <th class="px-3 py-2 text-right text-gray-700 font-medium">Extra Payment</th>
+                                            <th class="px-3 py-2 text-right text-gray-700 font-medium">Principal Paid</th>
+                                            <th class="px-3 py-2 text-right text-gray-700 font-medium">Interest Paid</th>
+                                            <th class="px-3 py-2 text-right text-gray-700 font-medium">Balance</th>
+                                            <th class="px-3 py-2 text-center text-gray-700 font-medium">Details</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="floatingTableBody" class="divide-y divide-gray-200">
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div id="floatingDetailedView" class="hidden">
+                            <div class="h-64 md:h-80 overflow-y-auto">
+                                <table class="w-full text-sm">
+                                    <thead class="bg-gray-50 sticky top-0">
+                                        <tr>
+                                            <th class="px-2 py-2 text-left text-gray-700 font-medium">Month</th>
+                                            <th class="px-2 py-2 text-right text-gray-700 font-medium">EMI</th>
+                                            <th class="px-2 py-2 text-right text-gray-700 font-medium">Principal</th>
+                                            <th class="px-2 py-2 text-right text-gray-700 font-medium">Interest</th>
+                                            <th class="px-2 py-2 text-right text-gray-700 font-medium">Extra</th>
+                                            <th class="px-2 py-2 text-right text-gray-700 font-medium">Balance</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="floatingDetailedTableBody" class="divide-y divide-gray-200">
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -522,6 +585,20 @@
             }
         });
 
+        document.getElementById('floatingToggle').addEventListener('change', function() {
+            const summaryView = document.getElementById('floatingSummaryView');
+            const detailedView = document.getElementById('floatingDetailedView');
+            
+            if (this.checked) {
+                summaryView.classList.add('hidden');
+                detailedView.classList.remove('hidden');
+                generateFloatingDetailedTable();
+            } else {
+                summaryView.classList.remove('hidden');
+                detailedView.classList.add('hidden');
+            }
+        });
+
         // Initialize all calculations on page load
         document.addEventListener('DOMContentLoaded', function() {
             calculateSIP();
@@ -602,20 +679,57 @@
             const P = parseFloat(document.getElementById('floatingLoanAmount').value);
             const r = parseFloat(document.getElementById('floatingRate').value) / 100 / 12;
             const n = parseFloat(document.getElementById('floatingTenure').value);
+            const extraPayment = parseFloat(document.getElementById('floatingExtra').value) || 0;
             
             if (P <= 0 || r <= 0 || n <= 0) {
                 return;
             }
             
-            // EMI Formula: EMI = [P × r × (1 + r)^n] / [(1 + r)^n – 1]
-            const emi = (P * r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
-            const totalAmount = emi * n;
-            const totalInterest = totalAmount - P;
+            // Calculate standard EMI first
+            const standardEMI = (P * r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
             
-            document.getElementById('floatingEMI').textContent = formatCurrency(Math.round(emi));
+            // Calculate with extra payments
+            let balance = P;
+            let totalInterest = 0;
+            let totalAmount = 0;
+            let actualMonths = 0;
+            let monthlyExtraPayment = extraPayment / 12;
+            
+            while (balance > 0.01 && actualMonths < n) {
+                actualMonths++;
+                const interestPayment = balance * r;
+                let principalPayment = standardEMI - interestPayment;
+                
+                // Add extra payment to principal
+                if (monthlyExtraPayment > 0) {
+                    principalPayment += monthlyExtraPayment;
+                }
+                
+                // Ensure we don't overpay
+                if (principalPayment > balance) {
+                    principalPayment = balance;
+                }
+                
+                balance -= principalPayment;
+                totalInterest += interestPayment;
+                totalAmount += interestPayment + principalPayment;
+                
+                if (balance <= 0.01) break;
+            }
+            
+            const actualYears = Math.ceil(actualMonths / 12);
+            const actualTenureText = actualYears > 1 ? 
+                `${actualYears} Years ${actualMonths % 12 > 0 ? (actualMonths % 12) + ' Months' : ''}` : 
+                `${actualMonths} Months`;
+            
+            document.getElementById('floatingEMI').textContent = formatCurrency(Math.round(standardEMI));
             document.getElementById('floatingTotalInterest').textContent = formatCurrency(Math.round(totalInterest));
             document.getElementById('floatingTotalAmount').textContent = formatCurrency(Math.round(totalAmount));
+            document.getElementById('floatingActualTenure').textContent = actualTenureText;
             document.getElementById('floatingResult').classList.remove('hidden');
+            
+            // Generate payment schedule table
+            generateFloatingTable();
         }
 
         // Floating EMI Slider Event Listeners
@@ -640,6 +754,13 @@
             calculateFloatingEMI();
         });
 
+        document.getElementById('floatingExtraSlider').addEventListener('input', function() {
+            const value = this.value;
+            document.getElementById('floatingExtraValue').textContent = parseInt(value).toLocaleString('en-IN');
+            document.getElementById('floatingExtra').value = value;
+            calculateFloatingEMI();
+        });
+
         // Floating EMI Input Field Event Listeners
         document.getElementById('floatingLoanAmount').addEventListener('input', function() {
             const value = this.value;
@@ -659,6 +780,13 @@
             const value = this.value;
             document.getElementById('floatingTenureSlider').value = value;
             document.getElementById('floatingTenureValue').textContent = value;
+            calculateFloatingEMI();
+        });
+
+        document.getElementById('floatingExtra').addEventListener('input', function() {
+            const value = this.value;
+            document.getElementById('floatingExtraSlider').value = value;
+            document.getElementById('floatingExtraValue').textContent = parseInt(value).toLocaleString('en-IN');
             calculateFloatingEMI();
         });
 
@@ -1141,6 +1269,205 @@
                 }
             });
         }
+
+        // Generate Floating EMI Table (Summary View)
+        function generateFloatingTable() {
+            const P = parseFloat(document.getElementById('floatingLoanAmount').value);
+            const r = parseFloat(document.getElementById('floatingRate').value) / 100 / 12;
+            const n = parseFloat(document.getElementById('floatingTenure').value);
+            const extraPayment = parseFloat(document.getElementById('floatingExtra').value) || 0;
+            
+            if (P <= 0 || r <= 0 || n <= 0) {
+                return;
+            }
+            
+            const standardEMI = (P * r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
+            const monthlyExtraPayment = extraPayment / 12;
+            
+            const tableBody = document.getElementById('floatingTableBody');
+            tableBody.innerHTML = '';
+            
+            let balance = P;
+            let currentYear = 1;
+            let yearlyEMIPaid = 0;
+            let yearlyExtraPaid = 0;
+            let yearlyPrincipalPaid = 0;
+            let yearlyInterestPaid = 0;
+            let monthsInCurrentYear = 0;
+            let monthlyDetails = [];
+            
+            for (let month = 1; month <= n && balance > 0.01; month++) {
+                const interestPayment = balance * r;
+                let principalPayment = standardEMI - interestPayment;
+                let extraThisMonth = monthlyExtraPayment;
+                
+                // Add extra payment to principal
+                if (extraThisMonth > 0) {
+                    principalPayment += extraThisMonth;
+                }
+                
+                // Ensure we don't overpay
+                if (principalPayment > balance) {
+                    extraThisMonth = extraThisMonth - (principalPayment - balance);
+                    principalPayment = balance;
+                }
+                
+                balance -= principalPayment;
+                
+                // Add to yearly totals
+                yearlyEMIPaid += standardEMI;
+                yearlyExtraPaid += extraThisMonth;
+                yearlyPrincipalPaid += principalPayment;
+                yearlyInterestPaid += interestPayment;
+                monthsInCurrentYear++;
+                
+                // Store monthly details
+                monthlyDetails.push({
+                    month: monthsInCurrentYear,
+                    emi: standardEMI,
+                    principal: principalPayment - extraThisMonth,
+                    interest: interestPayment,
+                    extra: extraThisMonth,
+                    balance: balance
+                });
+                
+                // If year is complete or loan is paid off
+                if (month % 12 === 0 || balance <= 0.01) {
+                    const row = document.createElement('tr');
+                    row.className = 'hover:bg-gray-50';
+                    row.innerHTML = `
+                        <td class="px-3 py-2 text-gray-900 font-medium">Year ${currentYear}</td>
+                        <td class="px-3 py-2 text-right text-blue-600">₹${Math.round(yearlyEMIPaid).toLocaleString('en-IN')}</td>
+                        <td class="px-3 py-2 text-right text-green-600">₹${Math.round(yearlyExtraPaid).toLocaleString('en-IN')}</td>
+                        <td class="px-3 py-2 text-right text-purple-600">₹${Math.round(yearlyPrincipalPaid).toLocaleString('en-IN')}</td>
+                        <td class="px-3 py-2 text-right text-red-600">₹${Math.round(yearlyInterestPaid).toLocaleString('en-IN')}</td>
+                        <td class="px-3 py-2 text-right text-gray-900 font-medium">₹${Math.round(balance).toLocaleString('en-IN')}</td>
+                        <td class="px-3 py-2 text-center">
+                            <button onclick="toggleFloatingMonthlyDetails(${currentYear})" class="text-blue-600 hover:text-blue-800 text-xs px-2 py-1 border border-blue-300 rounded hover:bg-blue-50">
+                                View Months
+                            </button>
+                        </td>
+                    `;
+                    tableBody.appendChild(row);
+                    
+                    // Hidden monthly details row
+                    const detailsRow = document.createElement('tr');
+                    detailsRow.id = `floatingMonthlyDetails${currentYear}`;
+                    detailsRow.className = 'hidden';
+                    detailsRow.innerHTML = `
+                        <td colspan="7" class="px-3 py-2 bg-gray-50">
+                            <div class="max-h-40 overflow-y-auto">
+                                <table class="w-full text-xs">
+                                    <thead>
+                                        <tr class="bg-gray-100">
+                                            <th class="px-2 py-1 text-left">Month</th>
+                                            <th class="px-2 py-1 text-right">EMI</th>
+                                            <th class="px-2 py-1 text-right">Principal</th>
+                                            <th class="px-2 py-1 text-right">Interest</th>
+                                            <th class="px-2 py-1 text-right">Extra</th>
+                                            <th class="px-2 py-1 text-right">Balance</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        ${monthlyDetails.map(detail => `
+                                            <tr class="hover:bg-gray-200">
+                                                <td class="px-2 py-1">${detail.month}</td>
+                                                <td class="px-2 py-1 text-right">₹${Math.round(detail.emi).toLocaleString('en-IN')}</td>
+                                                <td class="px-2 py-1 text-right text-purple-600">₹${Math.round(detail.principal).toLocaleString('en-IN')}</td>
+                                                <td class="px-2 py-1 text-right text-red-600">₹${Math.round(detail.interest).toLocaleString('en-IN')}</td>
+                                                <td class="px-2 py-1 text-right text-green-600">₹${Math.round(detail.extra).toLocaleString('en-IN')}</td>
+                                                <td class="px-2 py-1 text-right">₹${Math.round(detail.balance).toLocaleString('en-IN')}</td>
+                                            </tr>
+                                        `).join('')}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </td>
+                    `;
+                    tableBody.appendChild(detailsRow);
+                    
+                    // Reset for next year
+                    currentYear++;
+                    yearlyEMIPaid = 0;
+                    yearlyExtraPaid = 0;
+                    yearlyPrincipalPaid = 0;
+                    yearlyInterestPaid = 0;
+                    monthsInCurrentYear = 0;
+                    monthlyDetails = [];
+                    
+                    if (balance <= 0.01) break;
+                }
+            }
+        }
+
+        // Generate Floating EMI Detailed Table
+        function generateFloatingDetailedTable() {
+            const P = parseFloat(document.getElementById('floatingLoanAmount').value);
+            const r = parseFloat(document.getElementById('floatingRate').value) / 100 / 12;
+            const n = parseFloat(document.getElementById('floatingTenure').value);
+            const extraPayment = parseFloat(document.getElementById('floatingExtra').value) || 0;
+            
+            if (P <= 0 || r <= 0 || n <= 0) {
+                return;
+            }
+            
+            const standardEMI = (P * r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
+            const monthlyExtraPayment = extraPayment / 12;
+            
+            const tableBody = document.getElementById('floatingDetailedTableBody');
+            tableBody.innerHTML = '';
+            
+            let balance = P;
+            
+            for (let month = 1; month <= n && balance > 0.01; month++) {
+                const interestPayment = balance * r;
+                let principalPayment = standardEMI - interestPayment;
+                let extraThisMonth = monthlyExtraPayment;
+                
+                // Add extra payment to principal
+                if (extraThisMonth > 0) {
+                    principalPayment += extraThisMonth;
+                }
+                
+                // Ensure we don't overpay
+                if (principalPayment > balance) {
+                    extraThisMonth = extraThisMonth - (principalPayment - balance);
+                    principalPayment = balance;
+                }
+                
+                balance -= principalPayment;
+                
+                const row = document.createElement('tr');
+                row.className = 'hover:bg-gray-50';
+                row.innerHTML = `
+                    <td class="px-2 py-2 text-gray-900 font-medium">${month}</td>
+                    <td class="px-2 py-2 text-right text-blue-600">₹${Math.round(standardEMI).toLocaleString('en-IN')}</td>
+                    <td class="px-2 py-2 text-right text-purple-600">₹${Math.round(principalPayment - extraThisMonth).toLocaleString('en-IN')}</td>
+                    <td class="px-2 py-2 text-right text-red-600">₹${Math.round(interestPayment).toLocaleString('en-IN')}</td>
+                    <td class="px-2 py-2 text-right text-green-600">₹${Math.round(extraThisMonth).toLocaleString('en-IN')}</td>
+                    <td class="px-2 py-2 text-right text-gray-900 font-medium">₹${Math.round(balance).toLocaleString('en-IN')}</td>
+                `;
+                tableBody.appendChild(row);
+                
+                if (balance <= 0.01) break;
+            }
+        }
+
+        // Toggle floating monthly details visibility
+        function toggleFloatingMonthlyDetails(year) {
+            const detailsRow = document.getElementById(`floatingMonthlyDetails${year}`);
+            const button = event.target;
+            
+            if (detailsRow.classList.contains('hidden')) {
+                detailsRow.classList.remove('hidden');
+                button.textContent = 'Hide Months';
+                button.classList.add('bg-blue-100');
+            } else {
+                detailsRow.classList.add('hidden');
+                button.textContent = 'View Months';
+                button.classList.remove('bg-blue-100');
+            }
+        }
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'96acffc354b75477',t:'MTc1NDQ2NzIxMS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'96ad10eaa03e5952',t:'MTc1NDQ2NzkxMy4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
