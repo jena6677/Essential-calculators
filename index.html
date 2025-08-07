@@ -13,12 +13,6 @@
         .tab-content.active {
             display: block;
         }
-        .tab-button {
-            color: #374151;
-        }
-        .dark .tab-button {
-            color: #d1d5db;
-        }
         .tab-button.active {
             background-color: #3b82f6;
             color: white;
@@ -49,27 +43,16 @@
         }
     </style>
 </head>
-<body class="bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 min-h-screen transition-colors duration-300">
+<body class="bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen">
     <div class="container mx-auto px-4 py-8">
         <!-- Header -->
         <div class="text-center mb-8">
-            <div class="flex justify-between items-center mb-4">
-                <div></div>
-                <h1 class="text-4xl font-bold text-gray-800 dark:text-gray-100 mb-2">💰 Financial Calculators Hub</h1>
-                <div class="flex items-center space-x-2">
-                    <span class="text-sm text-gray-600 dark:text-gray-300">☀️</span>
-                    <label class="relative inline-flex items-center cursor-pointer">
-                        <input type="checkbox" id="nightModeToggle" class="sr-only peer">
-                        <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
-                    </label>
-                    <span class="text-sm text-gray-600 dark:text-gray-300">🌙</span>
-                </div>
-            </div>
-            <p class="text-gray-600 dark:text-gray-300">Plan your investments and loans with precision</p>
+            <h1 class="text-4xl font-bold text-gray-800 mb-2">💰 Financial Calculators Hub</h1>
+            <p class="text-gray-600">Plan your investments and loans with precision</p>
         </div>
 
         <!-- Tab Navigation -->
-        <div class="grid grid-cols-2 gap-3 md:flex md:flex-wrap md:justify-center mb-8 bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4">
+        <div class="grid grid-cols-2 gap-3 md:flex md:flex-wrap md:justify-center mb-8 bg-white rounded-lg shadow-lg p-4">
             <button class="tab-button px-3 py-3 md:px-4 md:py-2 md:m-1 rounded-lg font-medium transition-all duration-300 active text-sm md:text-base" onclick="showTab('sip')">
                 📈 SIP Calculator
             </button>
@@ -95,28 +78,28 @@
                         <div>
                             <label class="block text-sm font-medium mb-2">Monthly Investment Amount: ₹<span id="sipAmountValue">5000</span></label>
                             <input type="range" id="sipAmountSlider" min="500" max="100000" step="500" value="5000" class="w-full h-2 bg-white bg-opacity-30 rounded-lg appearance-none cursor-pointer slider mb-2">
-                            <input type="number" id="sipAmount" class="w-full px-3 md:px-4 py-2 md:py-3 rounded-lg text-gray-800 dark:text-gray-100 dark:bg-gray-700 border-0 focus:ring-2 focus:ring-blue-300 text-sm md:text-base" value="5000" required>
+                            <input type="number" id="sipAmount" class="w-full px-3 md:px-4 py-2 md:py-3 rounded-lg text-gray-800 border-0 focus:ring-2 focus:ring-blue-300 text-sm md:text-base" value="5000" required>
                         </div>
                         <div>
                             <label class="block text-sm font-medium mb-2">Expected Annual Return Rate: <span id="sipRateValue">12</span>%</label>
                             <input type="range" id="sipRateSlider" min="1" max="30" step="0.5" value="12" class="w-full h-2 bg-white bg-opacity-30 rounded-lg appearance-none cursor-pointer slider mb-2">
-                            <input type="number" id="sipRate" step="0.1" class="w-full px-3 md:px-4 py-2 md:py-3 rounded-lg text-gray-800 dark:text-gray-100 dark:bg-gray-700 border-0 focus:ring-2 focus:ring-blue-300 text-sm md:text-base" value="12" required>
+                            <input type="number" id="sipRate" step="0.1" class="w-full px-3 md:px-4 py-2 md:py-3 rounded-lg text-gray-800 border-0 focus:ring-2 focus:ring-blue-300 text-sm md:text-base" value="12" required>
                         </div>
                         <div>
                             <label class="block text-sm font-medium mb-2">Investment Duration: <span id="sipYearsValue">10</span> Years</label>
                             <input type="range" id="sipYearsSlider" min="1" max="40" step="1" value="10" class="w-full h-2 bg-white bg-opacity-30 rounded-lg appearance-none cursor-pointer slider mb-2">
-                            <input type="number" id="sipYears" class="w-full px-3 md:px-4 py-2 md:py-3 rounded-lg text-gray-800 dark:text-gray-100 dark:bg-gray-700 border-0 focus:ring-2 focus:ring-blue-300 text-sm md:text-base" value="10" required>
+                            <input type="number" id="sipYears" class="w-full px-3 md:px-4 py-2 md:py-3 rounded-lg text-gray-800 border-0 focus:ring-2 focus:ring-blue-300 text-sm md:text-base" value="10" required>
                         </div>
                         <div>
                             <label class="block text-sm font-medium mb-2">Annual SIP Increment: <span id="sipIncrementValue">0</span>%</label>
                             <input type="range" id="sipIncrementSlider" min="0" max="20" step="1" value="0" class="w-full h-2 bg-white bg-opacity-30 rounded-lg appearance-none cursor-pointer slider mb-2">
-                            <input type="number" id="sipIncrement" step="0.1" class="w-full px-3 md:px-4 py-2 md:py-3 rounded-lg text-gray-800 dark:text-gray-100 dark:bg-gray-700 border-0 focus:ring-2 focus:ring-blue-300 text-sm md:text-base" value="0">
+                            <input type="number" id="sipIncrement" step="0.1" class="w-full px-3 md:px-4 py-2 md:py-3 rounded-lg text-gray-800 border-0 focus:ring-2 focus:ring-blue-300 text-sm md:text-base" value="0">
                             <p class="text-xs mt-1 opacity-75">Set to 0 for no increment</p>
                         </div>
                         <div>
                             <label class="block text-sm font-medium mb-2">Additional Holding Period: <span id="sipHoldingValue">0</span> Years</label>
                             <input type="range" id="sipHoldingSlider" min="0" max="20" step="1" value="0" class="w-full h-2 bg-white bg-opacity-30 rounded-lg appearance-none cursor-pointer slider mb-2">
-                            <input type="number" id="sipHolding" class="w-full px-3 md:px-4 py-2 md:py-3 rounded-lg text-gray-800 dark:text-gray-100 dark:bg-gray-700 border-0 focus:ring-2 focus:ring-blue-300 text-sm md:text-base" value="0">
+                            <input type="number" id="sipHolding" class="w-full px-3 md:px-4 py-2 md:py-3 rounded-lg text-gray-800 border-0 focus:ring-2 focus:ring-blue-300 text-sm md:text-base" value="0">
                             <p class="text-xs mt-1 opacity-75">Years to hold after SIP ends (no new investments)</p>
                         </div>
                     </form>
@@ -141,16 +124,16 @@
                         </div>
                     </div>
                     
-                    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-xl p-3 md:p-6">
+                    <div class="bg-white rounded-xl shadow-xl p-3 md:p-6">
                         <div class="flex justify-between items-center mb-4">
-                            <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-100">Investment Growth</h3>
+                            <h3 class="text-lg font-semibold text-gray-800">Investment Growth</h3>
                             <div class="flex items-center space-x-2">
-                                <span class="text-sm text-gray-600 dark:text-gray-300">Chart</span>
+                                <span class="text-sm text-gray-600">Chart</span>
                                 <label class="relative inline-flex items-center cursor-pointer">
                                     <input type="checkbox" id="sipToggle" class="sr-only peer">
-                                    <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+                                    <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
                                 </label>
-                                <span class="text-sm text-gray-600 dark:text-gray-300">Table</span>
+                                <span class="text-sm text-gray-600">Table</span>
                             </div>
                         </div>
                         <div id="sipChartView">
@@ -159,17 +142,17 @@
                         <div id="sipTableView" class="hidden">
                             <div class="h-64 md:h-80 overflow-y-auto">
                                 <table class="w-full text-sm">
-                                    <thead class="bg-gray-50 dark:bg-gray-700 sticky top-0">
+                                    <thead class="bg-gray-50 sticky top-0">
                                         <tr>
-                                            <th class="px-3 py-2 text-left text-gray-700 dark:text-gray-200 font-medium">Year</th>
-                                            <th class="px-3 py-2 text-right text-gray-700 dark:text-gray-200 font-medium">Monthly SIP</th>
-                                            <th class="px-3 py-2 text-right text-gray-700 dark:text-gray-200 font-medium">Year Investment</th>
-                                            <th class="px-3 py-2 text-right text-gray-700 dark:text-gray-200 font-medium">Total Invested</th>
-                                            <th class="px-3 py-2 text-right text-gray-700 dark:text-gray-200 font-medium">Year End Value</th>
-                                            <th class="px-3 py-2 text-center text-gray-700 dark:text-gray-200 font-medium">Details</th>
+                                            <th class="px-3 py-2 text-left text-gray-700 font-medium">Year</th>
+                                            <th class="px-3 py-2 text-right text-gray-700 font-medium">Monthly SIP</th>
+                                            <th class="px-3 py-2 text-right text-gray-700 font-medium">Year Investment</th>
+                                            <th class="px-3 py-2 text-right text-gray-700 font-medium">Total Invested</th>
+                                            <th class="px-3 py-2 text-right text-gray-700 font-medium">Year End Value</th>
+                                            <th class="px-3 py-2 text-center text-gray-700 font-medium">Details</th>
                                         </tr>
                                     </thead>
-                                    <tbody id="sipTableBody" class="divide-y divide-gray-200 dark:divide-gray-600">
+                                    <tbody id="sipTableBody" class="divide-y divide-gray-200">
                                     </tbody>
                                 </table>
                             </div>
@@ -224,9 +207,9 @@
                         </div>
                     </div>
                     
-                    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-xl p-3 md:p-6">
+                    <div class="bg-white rounded-xl shadow-xl p-3 md:p-6">
                         <div class="flex justify-between items-center mb-4">
-                            <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-100">Investment Growth</h3>
+                            <h3 class="text-lg font-semibold text-gray-800">Investment Growth</h3>
                             <div class="flex items-center space-x-2">
                                 <span class="text-sm text-gray-600">Chart</span>
                                 <label class="relative inline-flex items-center cursor-pointer">
@@ -618,32 +601,8 @@
             }
         });
 
-        // Night Mode Toggle - Force override system settings
-        document.getElementById('nightModeToggle').addEventListener('change', function() {
-            if (this.checked) {
-                document.documentElement.classList.add('dark');
-                document.documentElement.style.colorScheme = 'dark';
-                localStorage.setItem('nightMode', 'enabled');
-            } else {
-                document.documentElement.classList.remove('dark');
-                document.documentElement.style.colorScheme = 'light';
-                localStorage.setItem('nightMode', 'disabled');
-            }
-        });
-
         // Initialize all calculations on page load
         document.addEventListener('DOMContentLoaded', function() {
-            // Check for saved night mode preference and force override system
-            if (localStorage.getItem('nightMode') === 'enabled') {
-                document.documentElement.classList.add('dark');
-                document.documentElement.style.colorScheme = 'dark';
-                document.getElementById('nightModeToggle').checked = true;
-            } else if (localStorage.getItem('nightMode') === 'disabled') {
-                document.documentElement.classList.remove('dark');
-                document.documentElement.style.colorScheme = 'light';
-                document.getElementById('nightModeToggle').checked = false;
-            }
-            
             calculateSIP();
             calculateLumpsum();
             calculateFloatingEMI();
@@ -1512,5 +1471,5 @@
             }
         }
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'96b884d8639e5492',t:'MTc1NDU4ODAwNS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'96b88b2146375470',t:'MTc1NDU4ODI2My4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
