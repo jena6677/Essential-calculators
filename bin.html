@@ -1,0 +1,1803 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Financial Calculators Hub</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .tab-button {
+            color: #374151;
+        }
+        .dark .tab-button {
+            color: #d1d5db;
+        }
+        .tab-button.active {
+            background-color: #3b82f6;
+            color: white;
+        }
+        .calculator-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .result-card {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+        .slider::-webkit-slider-thumb {
+            appearance: none;
+            height: 20px;
+            width: 20px;
+            border-radius: 50%;
+            background: #ffffff;
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+        }
+        .slider::-moz-range-thumb {
+            height: 20px;
+            width: 20px;
+            border-radius: 50%;
+            background: #ffffff;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 min-h-screen transition-colors duration-300">
+    <div class="container mx-auto px-4 py-8">
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <h1 class="text-4xl font-bold text-gray-800 mb-6">💰 Financial Calculators Hub</h1>
+            <p class="text-gray-600">Plan your investments and loans with precision</p>
+        </div>
+
+        <!-- Tab Navigation -->
+        <div class="grid grid-cols-2 gap-3 md:flex md:flex-wrap md:justify-center mb-8 bg-white rounded-lg shadow-lg p-4">
+            <button class="tab-button px-3 py-3 md:px-4 md:py-2 md:m-1 rounded-lg font-medium transition-all duration-300 active text-sm md:text-base" onclick="showTab('sip')">
+                📈 SIP Calculator
+            </button>
+            <button class="tab-button px-3 py-3 md:px-4 md:py-2 md:m-1 rounded-lg font-medium transition-all duration-300 text-sm md:text-base" onclick="showTab('lumpsum')">
+                💎 Lumpsum Calculator
+            </button>
+            <button class="tab-button px-3 py-3 md:px-4 md:py-2 md:m-1 rounded-lg font-medium transition-all duration-300 text-sm md:text-base" onclick="showTab('lic')">
+                🛡️ LIC Return Calculator
+            </button>
+            <button class="tab-button px-3 py-3 md:px-4 md:py-2 md:m-1 rounded-lg font-medium transition-all duration-300 text-sm md:text-base" onclick="showTab('emi-floating')">
+                🏠 EMI (Floating Rate)
+            </button>
+            <button class="tab-button px-3 py-3 md:px-4 md:py-2 md:m-1 rounded-lg font-medium transition-all duration-300 text-sm md:text-base" onclick="showTab('emi-flat')">
+                🏦 EMI (Flat Rate)
+            </button>
+        </div>
+
+        <!-- SIP Calculator -->
+        <div id="sip" class="tab-content active">
+            <div class="grid grid-cols-1 xl:grid-cols-2 gap-6 md:gap-8">
+                <div class="calculator-card rounded-xl shadow-xl p-4 md:p-6 text-white">
+                    <h2 class="text-xl md:text-2xl font-bold mb-4 md:mb-6 flex items-center">
+                        📈 SIP Calculator
+                    </h2>
+                    <form id="sipForm" class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Monthly Investment Amount: ₹<span id="sipAmountValue">5000</span></label>
+                            <input type="range" id="sipAmountSlider" min="500" max="100000" step="500" value="5000" class="w-full h-2 bg-white bg-opacity-30 rounded-lg appearance-none cursor-pointer slider mb-2">
+                            <input type="number" id="sipAmount" class="w-full px-3 md:px-4 py-2 md:py-3 rounded-lg text-gray-800 border-0 focus:ring-2 focus:ring-blue-300 text-sm md:text-base" value="5000" required>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Expected Annual Return Rate: <span id="sipRateValue">12</span>%</label>
+                            <input type="range" id="sipRateSlider" min="1" max="30" step="0.5" value="12" class="w-full h-2 bg-white bg-opacity-30 rounded-lg appearance-none cursor-pointer slider mb-2">
+                            <input type="number" id="sipRate" step="0.1" class="w-full px-3 md:px-4 py-2 md:py-3 rounded-lg text-gray-800 border-0 focus:ring-2 focus:ring-blue-300 text-sm md:text-base" value="12" required>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Investment Duration: <span id="sipYearsValue">10</span> Years</label>
+                            <input type="range" id="sipYearsSlider" min="1" max="40" step="1" value="10" class="w-full h-2 bg-white bg-opacity-30 rounded-lg appearance-none cursor-pointer slider mb-2">
+                            <input type="number" id="sipYears" class="w-full px-3 md:px-4 py-2 md:py-3 rounded-lg text-gray-800 border-0 focus:ring-2 focus:ring-blue-300 text-sm md:text-base" value="10" required>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Annual SIP Increment: <span id="sipIncrementValue">0</span>%</label>
+                            <input type="range" id="sipIncrementSlider" min="0" max="20" step="1" value="0" class="w-full h-2 bg-white bg-opacity-30 rounded-lg appearance-none cursor-pointer slider mb-2">
+                            <input type="number" id="sipIncrement" step="0.1" class="w-full px-3 md:px-4 py-2 md:py-3 rounded-lg text-gray-800 border-0 focus:ring-2 focus:ring-blue-300 text-sm md:text-base" value="0">
+                            <p class="text-xs mt-1 opacity-75">Set to 0 for no increment</p>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Additional Holding Period: <span id="sipHoldingValue">0</span> Years</label>
+                            <input type="range" id="sipHoldingSlider" min="0" max="20" step="1" value="0" class="w-full h-2 bg-white bg-opacity-30 rounded-lg appearance-none cursor-pointer slider mb-2">
+                            <input type="number" id="sipHolding" class="w-full px-3 md:px-4 py-2 md:py-3 rounded-lg text-gray-800 border-0 focus:ring-2 focus:ring-blue-300 text-sm md:text-base" value="0">
+                            <p class="text-xs mt-1 opacity-75">Years to hold after SIP ends (no new investments)</p>
+                        </div>
+                    </form>
+                </div>
+                
+                <div class="space-y-4 md:space-y-6">
+                    <div id="sipResult" class="result-card rounded-xl shadow-xl p-4 md:p-6 text-white hidden">
+                        <h3 class="text-lg md:text-xl font-bold mb-3 md:mb-4">📊 SIP Results</h3>
+                        <div class="space-y-2 md:space-y-3">
+                            <div class="flex justify-between text-sm md:text-base">
+                                <span>Total Investment:</span>
+                                <span id="sipInvested" class="font-bold"></span>
+                            </div>
+                            <div class="flex justify-between text-sm md:text-base">
+                                <span>Total Returns:</span>
+                                <span id="sipReturns" class="font-bold"></span>
+                            </div>
+                            <div class="flex justify-between text-base md:text-lg border-t pt-2 font-bold">
+                                <span>Maturity Value:</span>
+                                <span id="sipMaturity" class="font-bold"></span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white rounded-xl shadow-xl p-3 md:p-6">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-lg font-semibold text-gray-800">Investment Growth</h3>
+                            <div class="flex items-center space-x-2">
+                                <span class="text-sm text-gray-600">Chart</span>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" id="sipToggle" class="sr-only peer">
+                                    <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                                </label>
+                                <span class="text-sm text-gray-600">Table</span>
+                            </div>
+                        </div>
+                        <div id="sipChartView">
+                            <canvas id="sipChart" class="w-full h-64 md:h-80"></canvas>
+                        </div>
+                        <div id="sipTableView" class="hidden">
+                            <div class="h-64 md:h-80 overflow-y-auto">
+                                <table class="w-full text-sm">
+                                    <thead class="bg-gray-50 sticky top-0">
+                                        <tr>
+                                            <th class="px-3 py-2 text-left text-gray-700 font-medium">Year</th>
+                                            <th class="px-3 py-2 text-right text-gray-700 font-medium">Monthly SIP</th>
+                                            <th class="px-3 py-2 text-right text-gray-700 font-medium">Year Investment</th>
+                                            <th class="px-3 py-2 text-right text-gray-700 font-medium">Total Invested</th>
+                                            <th class="px-3 py-2 text-right text-gray-700 font-medium">Year End Value</th>
+                                            <th class="px-3 py-2 text-center text-gray-700 font-medium">Details</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="sipTableBody" class="divide-y divide-gray-200">
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Lumpsum Calculator -->
+        <div id="lumpsum" class="tab-content">
+            <div class="grid grid-cols-1 xl:grid-cols-2 gap-6 md:gap-8">
+                <div class="calculator-card rounded-xl shadow-xl p-4 md:p-6 text-white">
+                    <h2 class="text-xl md:text-2xl font-bold mb-4 md:mb-6 flex items-center">
+                        💎 Lumpsum Calculator
+                    </h2>
+                    <form id="lumpsumForm" class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Investment Amount: ₹<span id="lumpsumAmountValue">100000</span></label>
+                            <input type="range" id="lumpsumAmountSlider" min="10000" max="10000000" step="10000" value="100000" class="w-full h-2 bg-white bg-opacity-30 rounded-lg appearance-none cursor-pointer slider mb-2">
+                            <input type="number" id="lumpsumAmount" class="w-full px-3 md:px-4 py-2 md:py-3 rounded-lg text-gray-800 border-0 focus:ring-2 focus:ring-blue-300 text-sm md:text-base" value="100000" required>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Expected Annual Return Rate: <span id="lumpsumRateValue">12</span>%</label>
+                            <input type="range" id="lumpsumRateSlider" min="1" max="30" step="0.5" value="12" class="w-full h-2 bg-white bg-opacity-30 rounded-lg appearance-none cursor-pointer slider mb-2">
+                            <input type="number" id="lumpsumRate" step="0.1" class="w-full px-3 md:px-4 py-2 md:py-3 rounded-lg text-gray-800 border-0 focus:ring-2 focus:ring-blue-300 text-sm md:text-base" value="12" required>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Time Period: <span id="lumpsumYearsValue">10</span> Years</label>
+                            <input type="range" id="lumpsumYearsSlider" min="1" max="40" step="1" value="10" class="w-full h-2 bg-white bg-opacity-30 rounded-lg appearance-none cursor-pointer slider mb-2">
+                            <input type="number" id="lumpsumYears" class="w-full px-3 md:px-4 py-2 md:py-3 rounded-lg text-gray-800 border-0 focus:ring-2 focus:ring-blue-300 text-sm md:text-base" value="10" required>
+                        </div>
+                    </form>
+                </div>
+                
+                <div class="space-y-4 md:space-y-6">
+                    <div id="lumpsumResult" class="result-card rounded-xl shadow-xl p-4 md:p-6 text-white hidden">
+                        <h3 class="text-lg md:text-xl font-bold mb-3 md:mb-4">📊 Lumpsum Results</h3>
+                        <div class="space-y-2 md:space-y-3">
+                            <div class="flex justify-between text-sm md:text-base">
+                                <span>Initial Investment:</span>
+                                <span id="lumpsumInvested" class="font-bold"></span>
+                            </div>
+                            <div class="flex justify-between text-sm md:text-base">
+                                <span>Total Returns:</span>
+                                <span id="lumpsumReturns" class="font-bold"></span>
+                            </div>
+                            <div class="flex justify-between text-base md:text-lg border-t pt-2 font-bold">
+                                <span>Maturity Value:</span>
+                                <span id="lumpsumMaturity" class="font-bold"></span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white rounded-xl shadow-xl p-3 md:p-6">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-lg font-semibold text-gray-800">Investment Growth</h3>
+                            <div class="flex items-center space-x-2">
+                                <span class="text-sm text-gray-600">Chart</span>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" id="lumpsumToggle" class="sr-only peer">
+                                    <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                                </label>
+                                <span class="text-sm text-gray-600">Table</span>
+                            </div>
+                        </div>
+                        <div id="lumpsumChartView">
+                            <canvas id="lumpsumChart" class="w-full h-64 md:h-80"></canvas>
+                        </div>
+                        <div id="lumpsumTableView" class="hidden">
+                            <div class="h-64 md:h-80 overflow-y-auto">
+                                <table class="w-full text-sm">
+                                    <thead class="bg-gray-50 sticky top-0">
+                                        <tr>
+                                            <th class="px-3 py-2 text-left text-gray-700 font-medium">Year</th>
+                                            <th class="px-3 py-2 text-right text-gray-700 font-medium">Year Growth</th>
+                                            <th class="px-3 py-2 text-right text-gray-700 font-medium">Current Value</th>
+                                            <th class="px-3 py-2 text-right text-gray-700 font-medium">Total Returns</th>
+                                            <th class="px-3 py-2 text-center text-gray-700 font-medium">Details</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="lumpsumTableBody" class="divide-y divide-gray-200">
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- LIC Return Calculator -->
+        <div id="lic" class="tab-content">
+            <div class="grid grid-cols-1 xl:grid-cols-2 gap-6 md:gap-8">
+                <div class="calculator-card rounded-xl shadow-xl p-4 md:p-6 text-white">
+                    <h2 class="text-xl md:text-2xl font-bold mb-4 md:mb-6 flex items-center">
+                        🛡️ LIC Return Calculator
+                    </h2>
+                    <form id="licForm" class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Premium Payment Frequency</label>
+                            <select id="licFrequency" class="w-full px-3 md:px-4 py-2 md:py-3 rounded-lg text-gray-800 border-0 focus:ring-2 focus:ring-blue-300 text-sm md:text-base">
+                                <option value="monthly">Monthly</option>
+                                <option value="quarterly">Quarterly</option>
+                                <option value="yearly" selected>Yearly</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Premium Amount: ₹<span id="licPremiumValue">50000</span></label>
+                            <input type="range" id="licPremiumSlider" min="5000" max="500000" step="5000" value="50000" class="w-full h-2 bg-white bg-opacity-30 rounded-lg appearance-none cursor-pointer slider mb-2">
+                            <input type="number" id="licPremium" class="w-full px-3 md:px-4 py-2 md:py-3 rounded-lg text-gray-800 border-0 focus:ring-2 focus:ring-blue-300 text-sm md:text-base" value="50000" required>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Policy Term: <span id="licTermValue">20</span> Years</label>
+                            <input type="range" id="licTermSlider" min="5" max="40" step="1" value="20" class="w-full h-2 bg-white bg-opacity-30 rounded-lg appearance-none cursor-pointer slider mb-2">
+                            <input type="number" id="licTerm" class="w-full px-3 md:px-4 py-2 md:py-3 rounded-lg text-gray-800 border-0 focus:ring-2 focus:ring-blue-300 text-sm md:text-base" value="20" required>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Maturity Amount: ₹<span id="licMaturityValue">2000000</span></label>
+                            <input type="range" id="licMaturitySlider" min="100000" max="10000000" step="50000" value="2000000" class="w-full h-2 bg-white bg-opacity-30 rounded-lg appearance-none cursor-pointer slider mb-2">
+                            <input type="number" id="licMaturity" class="w-full px-3 md:px-4 py-2 md:py-3 rounded-lg text-gray-800 border-0 focus:ring-2 focus:ring-blue-300 text-sm md:text-base" value="2000000" required>
+                        </div>
+                    </form>
+                </div>
+                
+                <div class="space-y-4 md:space-y-6">
+                    <div id="licResult" class="result-card rounded-xl shadow-xl p-4 md:p-6 text-white hidden">
+                        <h3 class="text-lg md:text-xl font-bold mb-3 md:mb-4">📊 LIC Return Analysis</h3>
+                        <div class="space-y-2 md:space-y-3">
+                            <div class="flex justify-between text-sm md:text-base">
+                                <span>Total Premiums Paid:</span>
+                                <span id="licTotalPremium" class="font-bold"></span>
+                            </div>
+                            <div class="flex justify-between text-sm md:text-base">
+                                <span>Maturity Amount:</span>
+                                <span id="licMaturityAmount" class="font-bold"></span>
+                            </div>
+                            <div class="flex justify-between text-sm md:text-base">
+                                <span>Total Returns:</span>
+                                <span id="licTotalReturns" class="font-bold"></span>
+                            </div>
+                            <div class="flex justify-between text-base md:text-lg border-t pt-2 font-bold">
+                                <span>Annual Return Rate:</span>
+                                <span id="licAnnualReturn" class="font-bold text-yellow-300"></span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white rounded-xl shadow-xl p-3 md:p-6">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-lg font-semibold text-gray-800">Premium vs Returns Comparison</h3>
+                        </div>
+                        <div id="licChartView">
+                            <canvas id="licChart" class="w-full h-64 md:h-80"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- EMI Calculator (Floating Rate) -->
+        <div id="emi-floating" class="tab-content">
+            <div class="grid grid-cols-1 xl:grid-cols-2 gap-6 md:gap-8">
+                <div class="calculator-card rounded-xl shadow-xl p-4 md:p-6 text-white">
+                    <h2 class="text-lg md:text-2xl font-bold mb-4 md:mb-6 flex items-center">
+                        🏠 EMI Calculator (Floating Interest Rate)
+                    </h2>
+                    <form id="emiFloatingForm" class="grid grid-cols-1 gap-4 md:gap-6">
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Loan Amount: ₹<span id="floatingLoanAmountValue">1000000</span></label>
+                            <input type="range" id="floatingLoanAmountSlider" min="100000" max="50000000" step="100000" value="1000000" class="w-full h-2 bg-white bg-opacity-30 rounded-lg appearance-none cursor-pointer slider mb-2">
+                            <input type="number" id="floatingLoanAmount" class="w-full px-3 md:px-4 py-2 md:py-3 rounded-lg text-gray-800 border-0 focus:ring-2 focus:ring-blue-300 text-sm md:text-base" value="1000000" required>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Annual Interest Rate: <span id="floatingRateValue">8.5</span>%</label>
+                            <input type="range" id="floatingRateSlider" min="3" max="20" step="0.1" value="8.5" class="w-full h-2 bg-white bg-opacity-30 rounded-lg appearance-none cursor-pointer slider mb-2">
+                            <input type="number" id="floatingRate" step="0.1" class="w-full px-3 md:px-4 py-2 md:py-3 rounded-lg text-gray-800 border-0 focus:ring-2 focus:ring-blue-300 text-sm md:text-base" value="8.5" required>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Loan Tenure: <span id="floatingTenureValue">240</span> Months</label>
+                            <input type="range" id="floatingTenureSlider" min="12" max="360" step="12" value="240" class="w-full h-2 bg-white bg-opacity-30 rounded-lg appearance-none cursor-pointer slider mb-2">
+                            <input type="number" id="floatingTenure" class="w-full px-3 md:px-4 py-2 md:py-3 rounded-lg text-gray-800 border-0 focus:ring-2 focus:ring-blue-300 text-sm md:text-base" value="240" required>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Extra Annual Payment: ₹<span id="floatingExtraValue">0</span></label>
+                            <input type="range" id="floatingExtraSlider" min="0" max="500000" step="10000" value="0" class="w-full h-2 bg-white bg-opacity-30 rounded-lg appearance-none cursor-pointer slider mb-2">
+                            <input type="number" id="floatingExtra" class="w-full px-3 md:px-4 py-2 md:py-3 rounded-lg text-gray-800 border-0 focus:ring-2 focus:ring-blue-300 text-sm md:text-base" value="0">
+                            <p class="text-xs mt-1 opacity-75">Additional payment towards principal each year</p>
+                        </div>
+                    </form>
+                </div>
+                
+                <div class="space-y-4 md:space-y-6">
+                    <div id="floatingResult" class="result-card rounded-xl shadow-xl p-4 md:p-6 text-white hidden">
+                        <h3 class="text-lg md:text-xl font-bold mb-3 md:mb-4">📊 EMI Calculation Results</h3>
+                        <div class="space-y-2 md:space-y-3">
+                            <div class="flex justify-between text-sm md:text-base">
+                                <span>Monthly EMI:</span>
+                                <span id="floatingEMI" class="font-bold"></span>
+                            </div>
+                            <div class="flex justify-between text-sm md:text-base">
+                                <span>Total Interest:</span>
+                                <span id="floatingTotalInterest" class="font-bold"></span>
+                            </div>
+                            <div class="flex justify-between text-sm md:text-base">
+                                <span>Total Amount:</span>
+                                <span id="floatingTotalAmount" class="font-bold"></span>
+                            </div>
+                            <div class="flex justify-between text-base md:text-lg border-t pt-2 font-bold">
+                                <span>Actual Tenure:</span>
+                                <span id="floatingActualTenure" class="font-bold"></span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white rounded-xl shadow-xl p-3 md:p-6">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-lg font-semibold text-gray-800">EMI Payment Schedule</h3>
+                            <div class="flex items-center space-x-2">
+                                <span class="text-sm text-gray-600">Summary</span>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" id="floatingToggle" class="sr-only peer">
+                                    <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                                </label>
+                                <span class="text-sm text-gray-600">Detailed</span>
+                            </div>
+                        </div>
+                        <div id="floatingSummaryView">
+                            <div class="h-64 md:h-80 overflow-y-auto">
+                                <table class="w-full text-sm">
+                                    <thead class="bg-gray-50 sticky top-0">
+                                        <tr>
+                                            <th class="px-3 py-2 text-left text-gray-700 font-medium">Year</th>
+                                            <th class="px-3 py-2 text-right text-gray-700 font-medium">EMI Paid</th>
+                                            <th class="px-3 py-2 text-right text-gray-700 font-medium">Extra Payment</th>
+                                            <th class="px-3 py-2 text-right text-gray-700 font-medium">Principal Paid</th>
+                                            <th class="px-3 py-2 text-right text-gray-700 font-medium">Interest Paid</th>
+                                            <th class="px-3 py-2 text-right text-gray-700 font-medium">Balance</th>
+                                            <th class="px-3 py-2 text-center text-gray-700 font-medium">Details</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="floatingTableBody" class="divide-y divide-gray-200">
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div id="floatingDetailedView" class="hidden">
+                            <div class="h-64 md:h-80 overflow-y-auto">
+                                <table class="w-full text-sm">
+                                    <thead class="bg-gray-50 sticky top-0">
+                                        <tr>
+                                            <th class="px-2 py-2 text-left text-gray-700 font-medium">Month</th>
+                                            <th class="px-2 py-2 text-right text-gray-700 font-medium">EMI</th>
+                                            <th class="px-2 py-2 text-right text-gray-700 font-medium">Principal</th>
+                                            <th class="px-2 py-2 text-right text-gray-700 font-medium">Interest</th>
+                                            <th class="px-2 py-2 text-right text-gray-700 font-medium">Extra</th>
+                                            <th class="px-2 py-2 text-right text-gray-700 font-medium">Balance</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="floatingDetailedTableBody" class="divide-y divide-gray-200">
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- EMI Calculator (Flat Rate) -->
+        <div id="emi-flat" class="tab-content">
+            <div class="grid grid-cols-1 xl:grid-cols-2 gap-6 md:gap-8">
+                <div class="calculator-card rounded-xl shadow-xl p-4 md:p-6 text-white">
+                    <h2 class="text-lg md:text-2xl font-bold mb-4 md:mb-6 flex items-center">
+                        🏦 EMI Calculator (Flat Interest Rate)
+                    </h2>
+                    <form id="emiFlatForm" class="grid grid-cols-1 gap-4 md:gap-6">
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Loan Amount: ₹<span id="flatLoanAmountValue">1000000</span></label>
+                            <input type="range" id="flatLoanAmountSlider" min="100000" max="50000000" step="100000" value="1000000" class="w-full h-2 bg-white bg-opacity-30 rounded-lg appearance-none cursor-pointer slider mb-2">
+                            <input type="number" id="flatLoanAmount" class="w-full px-3 md:px-4 py-2 md:py-3 rounded-lg text-gray-800 border-0 focus:ring-2 focus:ring-blue-300 text-sm md:text-base" value="1000000" required>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Annual Interest Rate: <span id="flatRateValue">8.5</span>%</label>
+                            <input type="range" id="flatRateSlider" min="3" max="20" step="0.1" value="8.5" class="w-full h-2 bg-white bg-opacity-30 rounded-lg appearance-none cursor-pointer slider mb-2">
+                            <input type="number" id="flatRate" step="0.1" class="w-full px-3 md:px-4 py-2 md:py-3 rounded-lg text-gray-800 border-0 focus:ring-2 focus:ring-blue-300 text-sm md:text-base" value="8.5" required>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Loan Tenure: <span id="flatTenureValue">240</span> Months</label>
+                            <input type="range" id="flatTenureSlider" min="12" max="360" step="12" value="240" class="w-full h-2 bg-white bg-opacity-30 rounded-lg appearance-none cursor-pointer slider mb-2">
+                            <input type="number" id="flatTenure" class="w-full px-3 md:px-4 py-2 md:py-3 rounded-lg text-gray-800 border-0 focus:ring-2 focus:ring-blue-300 text-sm md:text-base" value="240" required>
+                        </div>
+                    </form>
+                </div>
+                
+                <div class="space-y-4 md:space-y-6">
+                    <div id="flatResult" class="result-card rounded-xl shadow-xl p-4 md:p-6 text-white hidden">
+                        <h3 class="text-lg md:text-xl font-bold mb-3 md:mb-4">📊 EMI Calculation Results</h3>
+                        <div class="space-y-2 md:space-y-3">
+                            <div class="flex justify-between text-sm md:text-base">
+                                <span>Monthly EMI:</span>
+                                <span id="flatEMI" class="font-bold"></span>
+                            </div>
+                            <div class="flex justify-between text-sm md:text-base">
+                                <span>Total Interest:</span>
+                                <span id="flatTotalInterest" class="font-bold"></span>
+                            </div>
+                            <div class="flex justify-between text-base md:text-lg border-t pt-2 font-bold">
+                                <span>Total Amount:</span>
+                                <span id="flatTotalAmount" class="font-bold"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let sipChart, lumpsumChart, licChart;
+
+        // Tab switching functionality
+        function showTab(tabName) {
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Remove active class from all buttons
+            document.querySelectorAll('.tab-button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Show selected tab
+            document.getElementById(tabName).classList.add('active');
+            
+            // Add active class to clicked button - find the button for this tab
+            const buttons = document.querySelectorAll('.tab-button');
+            buttons.forEach(btn => {
+                if (btn.textContent.includes('SIP Calculator') && tabName === 'sip') btn.classList.add('active');
+                if (btn.textContent.includes('Lumpsum Calculator') && tabName === 'lumpsum') btn.classList.add('active');
+                if (btn.textContent.includes('LIC Return Calculator') && tabName === 'lic') btn.classList.add('active');
+                if (btn.textContent.includes('EMI (Floating Rate)') && tabName === 'emi-floating') btn.classList.add('active');
+                if (btn.textContent.includes('EMI (Flat Rate)') && tabName === 'emi-flat') btn.classList.add('active');
+            });
+        }
+
+        // Format currency
+        function formatCurrency(amount) {
+            return '₹' + amount.toLocaleString('en-IN');
+        }
+
+        // SIP Calculator Function
+        function calculateSIP() {
+            const P = parseFloat(document.getElementById('sipAmount').value);
+            const r = parseFloat(document.getElementById('sipRate').value) / 100;
+            const n = parseFloat(document.getElementById('sipYears').value);
+            const increment = parseFloat(document.getElementById('sipIncrement').value) || 0;
+            const holdingPeriod = parseFloat(document.getElementById('sipHolding').value) || 0;
+            
+            if (P <= 0 || r <= 0 || n <= 0) {
+                return;
+            }
+            
+            const monthlyRate = r / 12;
+            const totalMonths = n * 12;
+            const annualIncrement = increment / 100;
+            
+            let futureValue = 0;
+            let totalInvested = 0;
+            let currentSIP = P;
+            
+            if (increment > 0) {
+                // Calculate SIP with annual increment
+                for (let year = 1; year <= n; year++) {
+                    const monthsInYear = 12;
+                    const remainingMonths = totalMonths - ((year - 1) * 12);
+                    const monthsToCalculate = Math.min(monthsInYear, remainingMonths);
+                    
+                    // Calculate future value for this year's SIP amount
+                    const yearFV = currentSIP * (((Math.pow(1 + monthlyRate, remainingMonths) - Math.pow(1 + monthlyRate, remainingMonths - monthsToCalculate)) / monthlyRate) * (1 + monthlyRate));
+                    futureValue += yearFV;
+                    totalInvested += currentSIP * monthsToCalculate;
+                    
+                    // Increment SIP for next year
+                    currentSIP = currentSIP * (1 + annualIncrement);
+                }
+            } else {
+                // Standard SIP calculation without increment
+                futureValue = P * (((Math.pow(1 + monthlyRate, totalMonths) - 1) / monthlyRate) * (1 + monthlyRate));
+                totalInvested = P * totalMonths;
+            }
+            
+            // Apply holding period growth if specified
+            if (holdingPeriod > 0) {
+                futureValue = futureValue * Math.pow(1 + r, holdingPeriod);
+            }
+            
+            const totalReturns = futureValue - totalInvested;
+            
+            document.getElementById('sipInvested').textContent = formatCurrency(Math.round(totalInvested));
+            document.getElementById('sipReturns').textContent = formatCurrency(Math.round(totalReturns));
+            document.getElementById('sipMaturity').textContent = formatCurrency(Math.round(futureValue));
+            
+            // Force show the result
+            const sipResult = document.getElementById('sipResult');
+            sipResult.classList.remove('hidden');
+            sipResult.style.display = 'block';
+            
+            // Create SIP growth chart
+            createSIPChart(P, monthlyRate, n, annualIncrement, holdingPeriod);
+        }
+
+        // SIP Slider Event Listeners
+        document.getElementById('sipAmountSlider').addEventListener('input', function() {
+            const value = this.value;
+            document.getElementById('sipAmountValue').textContent = parseInt(value).toLocaleString('en-IN');
+            document.getElementById('sipAmount').value = value;
+            calculateSIP();
+        });
+
+        document.getElementById('sipRateSlider').addEventListener('input', function() {
+            const value = this.value;
+            document.getElementById('sipRateValue').textContent = value;
+            document.getElementById('sipRate').value = value;
+            calculateSIP();
+        });
+
+        document.getElementById('sipYearsSlider').addEventListener('input', function() {
+            const value = this.value;
+            document.getElementById('sipYearsValue').textContent = value;
+            document.getElementById('sipYears').value = value;
+            calculateSIP();
+        });
+
+        document.getElementById('sipIncrementSlider').addEventListener('input', function() {
+            const value = this.value;
+            document.getElementById('sipIncrementValue').textContent = value;
+            document.getElementById('sipIncrement').value = value;
+            calculateSIP();
+        });
+
+        document.getElementById('sipHoldingSlider').addEventListener('input', function() {
+            const value = this.value;
+            document.getElementById('sipHoldingValue').textContent = value;
+            document.getElementById('sipHolding').value = value;
+            calculateSIP();
+        });
+
+        // SIP Input Field Event Listeners
+        document.getElementById('sipAmount').addEventListener('input', function() {
+            const value = this.value;
+            document.getElementById('sipAmountSlider').value = value;
+            document.getElementById('sipAmountValue').textContent = parseInt(value).toLocaleString('en-IN');
+            calculateSIP();
+        });
+
+        document.getElementById('sipRate').addEventListener('input', function() {
+            const value = this.value;
+            document.getElementById('sipRateSlider').value = value;
+            document.getElementById('sipRateValue').textContent = value;
+            calculateSIP();
+        });
+
+        document.getElementById('sipYears').addEventListener('input', function() {
+            const value = this.value;
+            document.getElementById('sipYearsSlider').value = value;
+            document.getElementById('sipYearsValue').textContent = value;
+            calculateSIP();
+        });
+
+        document.getElementById('sipIncrement').addEventListener('input', function() {
+            const value = this.value;
+            document.getElementById('sipIncrementSlider').value = value;
+            document.getElementById('sipIncrementValue').textContent = value;
+            calculateSIP();
+        });
+
+        document.getElementById('sipHolding').addEventListener('input', function() {
+            const value = this.value;
+            document.getElementById('sipHoldingSlider').value = value;
+            document.getElementById('sipHoldingValue').textContent = value;
+            calculateSIP();
+        });
+
+        // Toggle Event Listeners
+        document.getElementById('sipToggle').addEventListener('change', function() {
+            const chartView = document.getElementById('sipChartView');
+            const tableView = document.getElementById('sipTableView');
+            
+            if (this.checked) {
+                chartView.classList.add('hidden');
+                tableView.classList.remove('hidden');
+                generateSIPTable();
+            } else {
+                chartView.classList.remove('hidden');
+                tableView.classList.add('hidden');
+            }
+        });
+
+        document.getElementById('lumpsumToggle').addEventListener('change', function() {
+            const chartView = document.getElementById('lumpsumChartView');
+            const tableView = document.getElementById('lumpsumTableView');
+            
+            if (this.checked) {
+                chartView.classList.add('hidden');
+                tableView.classList.remove('hidden');
+                generateLumpsumTable();
+            } else {
+                chartView.classList.remove('hidden');
+                tableView.classList.add('hidden');
+            }
+        });
+
+        document.getElementById('floatingToggle').addEventListener('change', function() {
+            const summaryView = document.getElementById('floatingSummaryView');
+            const detailedView = document.getElementById('floatingDetailedView');
+            
+            if (this.checked) {
+                summaryView.classList.add('hidden');
+                detailedView.classList.remove('hidden');
+                generateFloatingDetailedTable();
+            } else {
+                summaryView.classList.remove('hidden');
+                detailedView.classList.add('hidden');
+            }
+        });
+
+        // Night Mode Toggle
+        document.getElementById('nightModeToggle').addEventListener('change', function() {
+            if (this.checked) {
+                document.documentElement.classList.add('dark');
+                localStorage.setItem('nightMode', 'enabled');
+            } else {
+                document.documentElement.classList.remove('dark');
+                localStorage.setItem('nightMode', 'disabled');
+            }
+        });
+
+        // LIC Calculator Function
+        function calculateLIC() {
+            const premium = parseFloat(document.getElementById('licPremium').value);
+            const term = parseFloat(document.getElementById('licTerm').value);
+            const maturityAmount = parseFloat(document.getElementById('licMaturity').value);
+            const frequency = document.getElementById('licFrequency').value;
+            
+            if (premium <= 0 || term <= 0 || maturityAmount <= 0) {
+                return;
+            }
+            
+            // Calculate total premiums based on frequency
+            let totalPremiums;
+            let paymentsPerYear;
+            
+            switch(frequency) {
+                case 'monthly':
+                    paymentsPerYear = 12;
+                    totalPremiums = premium * 12 * term;
+                    break;
+                case 'quarterly':
+                    paymentsPerYear = 4;
+                    totalPremiums = premium * 4 * term;
+                    break;
+                case 'yearly':
+                    paymentsPerYear = 1;
+                    totalPremiums = premium * term;
+                    break;
+            }
+            
+            const totalReturns = maturityAmount - totalPremiums;
+            
+            // Calculate annual return rate using compound interest formula
+            // For regular payments, we use the formula for annuity
+            let annualReturnRate;
+            
+            if (frequency === 'yearly') {
+                // For yearly payments, use simple compound interest approach
+                // FV = PMT * [((1 + r)^n - 1) / r] * (1 + r)
+                // Solving for r using iterative method
+                annualReturnRate = calculateAnnualReturnRate(premium, term, maturityAmount, paymentsPerYear);
+            } else {
+                // For monthly/quarterly, convert to annual equivalent
+                annualReturnRate = calculateAnnualReturnRate(premium, term, maturityAmount, paymentsPerYear);
+            }
+            
+            document.getElementById('licTotalPremium').textContent = formatCurrency(Math.round(totalPremiums));
+            document.getElementById('licMaturityAmount').textContent = formatCurrency(Math.round(maturityAmount));
+            document.getElementById('licTotalReturns').textContent = formatCurrency(Math.round(totalReturns));
+            document.getElementById('licAnnualReturn').textContent = annualReturnRate.toFixed(2) + '%';
+            
+            const licResult = document.getElementById('licResult');
+            licResult.classList.remove('hidden');
+            licResult.style.display = 'block';
+            
+            // Create LIC comparison chart
+            createLICChart(premium, term, totalPremiums, maturityAmount, frequency);
+        }
+        
+        // Calculate annual return rate using iterative method
+        function calculateAnnualReturnRate(payment, years, futureValue, paymentsPerYear) {
+            let rate = 0.05; // Start with 5% guess
+            let tolerance = 0.0001;
+            let maxIterations = 1000;
+            
+            for (let i = 0; i < maxIterations; i++) {
+                const periodicRate = rate / paymentsPerYear;
+                const totalPayments = years * paymentsPerYear;
+                
+                // Calculate future value using annuity formula
+                const calculatedFV = payment * (((Math.pow(1 + periodicRate, totalPayments) - 1) / periodicRate) * (1 + periodicRate));
+                
+                const difference = calculatedFV - futureValue;
+                
+                if (Math.abs(difference) < tolerance) {
+                    return rate * 100;
+                }
+                
+                // Adjust rate based on difference
+                if (difference > 0) {
+                    rate -= 0.0001;
+                } else {
+                    rate += 0.0001;
+                }
+                
+                // Ensure rate doesn't go negative
+                if (rate < 0) rate = 0.0001;
+            }
+            
+            return rate * 100;
+        }
+
+        // LIC Slider Event Listeners
+        document.getElementById('licPremiumSlider').addEventListener('input', function() {
+            const value = this.value;
+            document.getElementById('licPremiumValue').textContent = parseInt(value).toLocaleString('en-IN');
+            document.getElementById('licPremium').value = value;
+            calculateLIC();
+        });
+
+        document.getElementById('licTermSlider').addEventListener('input', function() {
+            const value = this.value;
+            document.getElementById('licTermValue').textContent = value;
+            document.getElementById('licTerm').value = value;
+            calculateLIC();
+        });
+
+        document.getElementById('licMaturitySlider').addEventListener('input', function() {
+            const value = this.value;
+            document.getElementById('licMaturityValue').textContent = parseInt(value).toLocaleString('en-IN');
+            document.getElementById('licMaturity').value = value;
+            calculateLIC();
+        });
+
+        // LIC Input Field Event Listeners
+        document.getElementById('licPremium').addEventListener('input', function() {
+            const value = this.value;
+            document.getElementById('licPremiumSlider').value = value;
+            document.getElementById('licPremiumValue').textContent = parseInt(value).toLocaleString('en-IN');
+            calculateLIC();
+        });
+
+        document.getElementById('licTerm').addEventListener('input', function() {
+            const value = this.value;
+            document.getElementById('licTermSlider').value = value;
+            document.getElementById('licTermValue').textContent = value;
+            calculateLIC();
+        });
+
+        document.getElementById('licMaturity').addEventListener('input', function() {
+            const value = this.value;
+            document.getElementById('licMaturitySlider').value = value;
+            document.getElementById('licMaturityValue').textContent = parseInt(value).toLocaleString('en-IN');
+            calculateLIC();
+        });
+
+        document.getElementById('licFrequency').addEventListener('change', function() {
+            calculateLIC();
+        });
+
+        // Initialize all calculations on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            // Show SIP tab by default first
+            showTab('sip');
+            
+            // Then calculate all values
+            setTimeout(() => {
+                calculateSIP();
+                calculateLumpsum();
+                calculateLIC();
+                calculateFloatingEMI();
+                calculateFlatEMI();
+            }, 100);
+        });
+
+        // Lumpsum Calculator Function
+        function calculateLumpsum() {
+            const P = parseFloat(document.getElementById('lumpsumAmount').value);
+            const r = parseFloat(document.getElementById('lumpsumRate').value) / 100;
+            const t = parseFloat(document.getElementById('lumpsumYears').value);
+            
+            if (P <= 0 || r <= 0 || t <= 0) {
+                return;
+            }
+            
+            // Lumpsum Formula: FV = P × (1 + r)^t
+            const futureValue = P * Math.pow(1 + r, t);
+            const totalReturns = futureValue - P;
+            
+            document.getElementById('lumpsumInvested').textContent = formatCurrency(P);
+            document.getElementById('lumpsumReturns').textContent = formatCurrency(totalReturns);
+            document.getElementById('lumpsumMaturity').textContent = formatCurrency(futureValue);
+            
+            const lumpsumResult = document.getElementById('lumpsumResult');
+            lumpsumResult.classList.remove('hidden');
+            lumpsumResult.style.display = 'block';
+            
+            // Create Lumpsum growth chart
+            createLumpsumChart(P, r, t);
+        }
+
+        // Lumpsum Slider Event Listeners
+        document.getElementById('lumpsumAmountSlider').addEventListener('input', function() {
+            const value = this.value;
+            document.getElementById('lumpsumAmountValue').textContent = parseInt(value).toLocaleString('en-IN');
+            document.getElementById('lumpsumAmount').value = value;
+            calculateLumpsum();
+        });
+
+        document.getElementById('lumpsumRateSlider').addEventListener('input', function() {
+            const value = this.value;
+            document.getElementById('lumpsumRateValue').textContent = value;
+            document.getElementById('lumpsumRate').value = value;
+            calculateLumpsum();
+        });
+
+        document.getElementById('lumpsumYearsSlider').addEventListener('input', function() {
+            const value = this.value;
+            document.getElementById('lumpsumYearsValue').textContent = value;
+            document.getElementById('lumpsumYears').value = value;
+            calculateLumpsum();
+        });
+
+        // Lumpsum Input Field Event Listeners
+        document.getElementById('lumpsumAmount').addEventListener('input', function() {
+            const value = this.value;
+            document.getElementById('lumpsumAmountSlider').value = value;
+            document.getElementById('lumpsumAmountValue').textContent = parseInt(value).toLocaleString('en-IN');
+            calculateLumpsum();
+        });
+
+        document.getElementById('lumpsumRate').addEventListener('input', function() {
+            const value = this.value;
+            document.getElementById('lumpsumRateSlider').value = value;
+            document.getElementById('lumpsumRateValue').textContent = value;
+            calculateLumpsum();
+        });
+
+        document.getElementById('lumpsumYears').addEventListener('input', function() {
+            const value = this.value;
+            document.getElementById('lumpsumYearsSlider').value = value;
+            document.getElementById('lumpsumYearsValue').textContent = value;
+            calculateLumpsum();
+        });
+
+        // EMI Calculator (Floating Rate) Function
+        function calculateFloatingEMI() {
+            const P = parseFloat(document.getElementById('floatingLoanAmount').value);
+            const r = parseFloat(document.getElementById('floatingRate').value) / 100 / 12;
+            const n = parseFloat(document.getElementById('floatingTenure').value);
+            const extraPayment = parseFloat(document.getElementById('floatingExtra').value) || 0;
+            
+            if (P <= 0 || r <= 0 || n <= 0) {
+                return;
+            }
+            
+            // Calculate standard EMI first
+            const standardEMI = (P * r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
+            
+            // Calculate with extra payments
+            let balance = P;
+            let totalInterest = 0;
+            let totalAmount = 0;
+            let actualMonths = 0;
+            let monthlyExtraPayment = extraPayment / 12;
+            
+            while (balance > 0.01 && actualMonths < n) {
+                actualMonths++;
+                const interestPayment = balance * r;
+                let principalPayment = standardEMI - interestPayment;
+                
+                // Add extra payment to principal
+                if (monthlyExtraPayment > 0) {
+                    principalPayment += monthlyExtraPayment;
+                }
+                
+                // Ensure we don't overpay
+                if (principalPayment > balance) {
+                    principalPayment = balance;
+                }
+                
+                balance -= principalPayment;
+                totalInterest += interestPayment;
+                totalAmount += interestPayment + principalPayment;
+                
+                if (balance <= 0.01) break;
+            }
+            
+            const actualYears = Math.ceil(actualMonths / 12);
+            const actualTenureText = actualYears > 1 ? 
+                `${actualYears} Years ${actualMonths % 12 > 0 ? (actualMonths % 12) + ' Months' : ''}` : 
+                `${actualMonths} Months`;
+            
+            document.getElementById('floatingEMI').textContent = formatCurrency(Math.round(standardEMI));
+            document.getElementById('floatingTotalInterest').textContent = formatCurrency(Math.round(totalInterest));
+            document.getElementById('floatingTotalAmount').textContent = formatCurrency(Math.round(totalAmount));
+            document.getElementById('floatingActualTenure').textContent = actualTenureText;
+            
+            const floatingResult = document.getElementById('floatingResult');
+            floatingResult.classList.remove('hidden');
+            floatingResult.style.display = 'block';
+            
+            // Generate payment schedule table
+            generateFloatingTable();
+        }
+
+        // Floating EMI Slider Event Listeners
+        document.getElementById('floatingLoanAmountSlider').addEventListener('input', function() {
+            const value = this.value;
+            document.getElementById('floatingLoanAmountValue').textContent = parseInt(value).toLocaleString('en-IN');
+            document.getElementById('floatingLoanAmount').value = value;
+            calculateFloatingEMI();
+        });
+
+        document.getElementById('floatingRateSlider').addEventListener('input', function() {
+            const value = this.value;
+            document.getElementById('floatingRateValue').textContent = value;
+            document.getElementById('floatingRate').value = value;
+            calculateFloatingEMI();
+        });
+
+        document.getElementById('floatingTenureSlider').addEventListener('input', function() {
+            const value = this.value;
+            document.getElementById('floatingTenureValue').textContent = value;
+            document.getElementById('floatingTenure').value = value;
+            calculateFloatingEMI();
+        });
+
+        document.getElementById('floatingExtraSlider').addEventListener('input', function() {
+            const value = this.value;
+            document.getElementById('floatingExtraValue').textContent = parseInt(value).toLocaleString('en-IN');
+            document.getElementById('floatingExtra').value = value;
+            calculateFloatingEMI();
+        });
+
+        // Floating EMI Input Field Event Listeners
+        document.getElementById('floatingLoanAmount').addEventListener('input', function() {
+            const value = this.value;
+            document.getElementById('floatingLoanAmountSlider').value = value;
+            document.getElementById('floatingLoanAmountValue').textContent = parseInt(value).toLocaleString('en-IN');
+            calculateFloatingEMI();
+        });
+
+        document.getElementById('floatingRate').addEventListener('input', function() {
+            const value = this.value;
+            document.getElementById('floatingRateSlider').value = value;
+            document.getElementById('floatingRateValue').textContent = value;
+            calculateFloatingEMI();
+        });
+
+        document.getElementById('floatingTenure').addEventListener('input', function() {
+            const value = this.value;
+            document.getElementById('floatingTenureSlider').value = value;
+            document.getElementById('floatingTenureValue').textContent = value;
+            calculateFloatingEMI();
+        });
+
+        document.getElementById('floatingExtra').addEventListener('input', function() {
+            const value = this.value;
+            document.getElementById('floatingExtraSlider').value = value;
+            document.getElementById('floatingExtraValue').textContent = parseInt(value).toLocaleString('en-IN');
+            calculateFloatingEMI();
+        });
+
+        // EMI Calculator (Flat Rate) Function
+        function calculateFlatEMI() {
+            const P = parseFloat(document.getElementById('flatLoanAmount').value);
+            const r = parseFloat(document.getElementById('flatRate').value);
+            const n = parseFloat(document.getElementById('flatTenure').value);
+            
+            if (P <= 0 || r <= 0 || n <= 0) {
+                return;
+            }
+            
+            const tenureYears = n / 12;
+            
+            // Flat Rate Formula
+            const totalInterest = (P * r * tenureYears) / 100;
+            const totalAmount = P + totalInterest;
+            const emi = totalAmount / n;
+            
+            document.getElementById('flatEMI').textContent = formatCurrency(Math.round(emi));
+            document.getElementById('flatTotalInterest').textContent = formatCurrency(Math.round(totalInterest));
+            document.getElementById('flatTotalAmount').textContent = formatCurrency(Math.round(totalAmount));
+            
+            const flatResult = document.getElementById('flatResult');
+            flatResult.classList.remove('hidden');
+            flatResult.style.display = 'block';
+        }
+
+        // Flat EMI Slider Event Listeners
+        document.getElementById('flatLoanAmountSlider').addEventListener('input', function() {
+            const value = this.value;
+            document.getElementById('flatLoanAmountValue').textContent = parseInt(value).toLocaleString('en-IN');
+            document.getElementById('flatLoanAmount').value = value;
+            calculateFlatEMI();
+        });
+
+        document.getElementById('flatRateSlider').addEventListener('input', function() {
+            const value = this.value;
+            document.getElementById('flatRateValue').textContent = value;
+            document.getElementById('flatRate').value = value;
+            calculateFlatEMI();
+        });
+
+        document.getElementById('flatTenureSlider').addEventListener('input', function() {
+            const value = this.value;
+            document.getElementById('flatTenureValue').textContent = value;
+            document.getElementById('flatTenure').value = value;
+            calculateFlatEMI();
+        });
+
+        // Flat EMI Input Field Event Listeners
+        document.getElementById('flatLoanAmount').addEventListener('input', function() {
+            const value = this.value;
+            document.getElementById('flatLoanAmountSlider').value = value;
+            document.getElementById('flatLoanAmountValue').textContent = parseInt(value).toLocaleString('en-IN');
+            calculateFlatEMI();
+        });
+
+        document.getElementById('flatRate').addEventListener('input', function() {
+            const value = this.value;
+            document.getElementById('flatRateSlider').value = value;
+            document.getElementById('flatRateValue').textContent = value;
+            calculateFlatEMI();
+        });
+
+        document.getElementById('flatTenure').addEventListener('input', function() {
+            const value = this.value;
+            document.getElementById('flatTenureSlider').value = value;
+            document.getElementById('flatTenureValue').textContent = value;
+            calculateFlatEMI();
+        });
+
+        // Generate SIP Table
+        function generateSIPTable() {
+            const P = parseFloat(document.getElementById('sipAmount').value);
+            const r = parseFloat(document.getElementById('sipRate').value) / 100;
+            const n = parseFloat(document.getElementById('sipYears').value);
+            const increment = parseFloat(document.getElementById('sipIncrement').value) || 0;
+            const holdingPeriod = parseFloat(document.getElementById('sipHolding').value) || 0;
+            
+            if (P <= 0 || r <= 0 || n <= 0) {
+                return;
+            }
+            
+            const monthlyRate = r / 12;
+            const annualIncrement = increment / 100;
+            
+            const tableBody = document.getElementById('sipTableBody');
+            tableBody.innerHTML = '';
+            
+            let totalInvested = 0;
+            let currentValue = 0;
+            let currentSIP = P;
+            
+            // SIP investment period - yearly breakdown
+            for (let year = 1; year <= n; year++) {
+                let yearInvestment = 0;
+                let yearStartValue = currentValue;
+                let monthlyDetails = [];
+                
+                // Calculate monthly details for this year
+                for (let month = 1; month <= 12; month++) {
+                    const globalMonth = (year - 1) * 12 + month;
+                    
+                    totalInvested += currentSIP;
+                    yearInvestment += currentSIP;
+                    
+                    // Calculate current value using compound interest
+                    if (globalMonth === 1) {
+                        currentValue = currentSIP * (1 + monthlyRate);
+                    } else {
+                        currentValue = (currentValue + currentSIP) * (1 + monthlyRate);
+                    }
+                    
+                    monthlyDetails.push({
+                        month: month,
+                        sip: currentSIP,
+                        invested: totalInvested,
+                        value: currentValue
+                    });
+                }
+                
+                const yearEndValue = currentValue;
+                const yearGrowth = yearEndValue - yearStartValue - yearInvestment;
+                
+                const row = document.createElement('tr');
+                row.className = 'hover:bg-gray-50';
+                row.innerHTML = `
+                    <td class="px-3 py-2 text-gray-900 font-medium">Year ${year}</td>
+                    <td class="px-3 py-2 text-right text-gray-900">₹${Math.round(currentSIP).toLocaleString('en-IN')}</td>
+                    <td class="px-3 py-2 text-right text-blue-600">₹${Math.round(yearInvestment).toLocaleString('en-IN')}</td>
+                    <td class="px-3 py-2 text-right text-gray-900">₹${Math.round(totalInvested).toLocaleString('en-IN')}</td>
+                    <td class="px-3 py-2 text-right text-green-600 font-medium">₹${Math.round(yearEndValue).toLocaleString('en-IN')}</td>
+                    <td class="px-3 py-2 text-center">
+                        <button onclick="toggleMonthlyDetails(${year})" class="text-blue-600 hover:text-blue-800 text-xs px-2 py-1 border border-blue-300 rounded hover:bg-blue-50">
+                            View Months
+                        </button>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+                
+                // Hidden monthly details row
+                const detailsRow = document.createElement('tr');
+                detailsRow.id = `monthlyDetails${year}`;
+                detailsRow.className = 'hidden';
+                detailsRow.innerHTML = `
+                    <td colspan="6" class="px-3 py-2 bg-gray-50">
+                        <div class="max-h-40 overflow-y-auto">
+                            <table class="w-full text-xs">
+                                <thead>
+                                    <tr class="bg-gray-100">
+                                        <th class="px-2 py-1 text-left">Month</th>
+                                        <th class="px-2 py-1 text-right">Monthly SIP</th>
+                                        <th class="px-2 py-1 text-right">Cumulative Invested</th>
+                                        <th class="px-2 py-1 text-right">Portfolio Value</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${monthlyDetails.map(detail => `
+                                        <tr class="hover:bg-gray-200">
+                                            <td class="px-2 py-1">${detail.month}</td>
+                                            <td class="px-2 py-1 text-right">₹${Math.round(detail.sip).toLocaleString('en-IN')}</td>
+                                            <td class="px-2 py-1 text-right">₹${Math.round(detail.invested).toLocaleString('en-IN')}</td>
+                                            <td class="px-2 py-1 text-right text-green-600">₹${Math.round(detail.value).toLocaleString('en-IN')}</td>
+                                        </tr>
+                                    `).join('')}
+                                </tbody>
+                            </table>
+                        </div>
+                    </td>
+                `;
+                tableBody.appendChild(detailsRow);
+                
+                // Increment SIP for next year
+                if (annualIncrement > 0) {
+                    currentSIP = currentSIP * (1 + annualIncrement);
+                }
+            }
+            
+            // Holding period (no new investments, just growth)
+            if (holdingPeriod > 0) {
+                const finalInvested = totalInvested;
+                const sipEndValue = currentValue;
+                
+                for (let holdYear = 1; holdYear <= holdingPeriod; holdYear++) {
+                    const holdingValue = sipEndValue * Math.pow(1 + r, holdYear);
+                    const yearGrowth = holdingValue - (holdYear === 1 ? sipEndValue : sipEndValue * Math.pow(1 + r, holdYear - 1));
+                    
+                    const row = document.createElement('tr');
+                    row.className = 'hover:bg-blue-50 bg-blue-25';
+                    row.innerHTML = `
+                        <td class="px-3 py-2 text-blue-700 font-medium">Hold ${holdYear}</td>
+                        <td class="px-3 py-2 text-right text-blue-700">₹0</td>
+                        <td class="px-3 py-2 text-right text-blue-600">₹0</td>
+                        <td class="px-3 py-2 text-right text-gray-900">₹${Math.round(finalInvested).toLocaleString('en-IN')}</td>
+                        <td class="px-3 py-2 text-right text-green-600 font-medium">₹${Math.round(holdingValue).toLocaleString('en-IN')}</td>
+                        <td class="px-3 py-2 text-center text-blue-600 text-xs">Growth: ₹${Math.round(yearGrowth).toLocaleString('en-IN')}</td>
+                    `;
+                    tableBody.appendChild(row);
+                }
+            }
+        }
+        
+        // Toggle monthly details visibility
+        function toggleMonthlyDetails(year) {
+            const detailsRow = document.getElementById(`monthlyDetails${year}`);
+            const button = event.target;
+            
+            if (detailsRow.classList.contains('hidden')) {
+                detailsRow.classList.remove('hidden');
+                button.textContent = 'Hide Months';
+                button.classList.add('bg-blue-100');
+            } else {
+                detailsRow.classList.add('hidden');
+                button.textContent = 'View Months';
+                button.classList.remove('bg-blue-100');
+            }
+        }
+
+        // Generate Lumpsum Table
+        function generateLumpsumTable() {
+            const P = parseFloat(document.getElementById('lumpsumAmount').value);
+            const r = parseFloat(document.getElementById('lumpsumRate').value) / 100;
+            const t = parseFloat(document.getElementById('lumpsumYears').value);
+            
+            if (P <= 0 || r <= 0 || t <= 0) {
+                return;
+            }
+            
+            const monthlyRate = r / 12;
+            
+            const tableBody = document.getElementById('lumpsumTableBody');
+            tableBody.innerHTML = '';
+            
+            // Yearly breakdown for lumpsum
+            for (let year = 1; year <= t; year++) {
+                const yearStartValue = year === 1 ? P : P * Math.pow(1 + r, year - 1);
+                const yearEndValue = P * Math.pow(1 + r, year);
+                const yearGrowth = yearEndValue - yearStartValue;
+                const totalReturns = yearEndValue - P;
+                
+                // Calculate monthly details for this year
+                let monthlyDetails = [];
+                for (let month = 1; month <= 12; month++) {
+                    const globalMonth = (year - 1) * 12 + month;
+                    const monthValue = P * Math.pow(1 + monthlyRate, globalMonth);
+                    const monthGrowth = month === 1 ? 
+                        (monthValue - yearStartValue) : 
+                        (monthValue - P * Math.pow(1 + monthlyRate, globalMonth - 1));
+                    const monthReturns = monthValue - P;
+                    
+                    monthlyDetails.push({
+                        month: month,
+                        growth: monthGrowth,
+                        value: monthValue,
+                        returns: monthReturns
+                    });
+                }
+                
+                const row = document.createElement('tr');
+                row.className = 'hover:bg-gray-50';
+                row.innerHTML = `
+                    <td class="px-3 py-2 text-gray-900 font-medium">Year ${year}</td>
+                    <td class="px-3 py-2 text-right text-blue-600">₹${Math.round(yearGrowth).toLocaleString('en-IN')}</td>
+                    <td class="px-3 py-2 text-right text-gray-900">₹${Math.round(yearEndValue).toLocaleString('en-IN')}</td>
+                    <td class="px-3 py-2 text-right text-green-600 font-medium">₹${Math.round(totalReturns).toLocaleString('en-IN')}</td>
+                    <td class="px-3 py-2 text-center">
+                        <button onclick="toggleLumpsumMonthlyDetails(${year})" class="text-blue-600 hover:text-blue-800 text-xs px-2 py-1 border border-blue-300 rounded hover:bg-blue-50">
+                            View Months
+                        </button>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+                
+                // Hidden monthly details row
+                const detailsRow = document.createElement('tr');
+                detailsRow.id = `lumpsumMonthlyDetails${year}`;
+                detailsRow.className = 'hidden';
+                detailsRow.innerHTML = `
+                    <td colspan="5" class="px-3 py-2 bg-gray-50">
+                        <div class="max-h-40 overflow-y-auto">
+                            <table class="w-full text-xs">
+                                <thead>
+                                    <tr class="bg-gray-100">
+                                        <th class="px-2 py-1 text-left">Month</th>
+                                        <th class="px-2 py-1 text-right">Monthly Growth</th>
+                                        <th class="px-2 py-1 text-right">Current Value</th>
+                                        <th class="px-2 py-1 text-right">Total Returns</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${monthlyDetails.map(detail => `
+                                        <tr class="hover:bg-gray-200">
+                                            <td class="px-2 py-1">${detail.month}</td>
+                                            <td class="px-2 py-1 text-right text-blue-600">₹${Math.round(detail.growth).toLocaleString('en-IN')}</td>
+                                            <td class="px-2 py-1 text-right">₹${Math.round(detail.value).toLocaleString('en-IN')}</td>
+                                            <td class="px-2 py-1 text-right text-green-600">₹${Math.round(detail.returns).toLocaleString('en-IN')}</td>
+                                        </tr>
+                                    `).join('')}
+                                </tbody>
+                            </table>
+                        </div>
+                    </td>
+                `;
+                tableBody.appendChild(detailsRow);
+            }
+        }
+        
+        // Toggle lumpsum monthly details visibility
+        function toggleLumpsumMonthlyDetails(year) {
+            const detailsRow = document.getElementById(`lumpsumMonthlyDetails${year}`);
+            const button = event.target;
+            
+            if (detailsRow.classList.contains('hidden')) {
+                detailsRow.classList.remove('hidden');
+                button.textContent = 'Hide Months';
+                button.classList.add('bg-blue-100');
+            } else {
+                detailsRow.classList.add('hidden');
+                button.textContent = 'View Months';
+                button.classList.remove('bg-blue-100');
+            }
+        }
+
+        // Create SIP Growth Chart
+        function createSIPChart(monthlyInvestment, monthlyRate, years, annualIncrement = 0, holdingPeriod = 0) {
+            const ctx = document.getElementById('sipChart').getContext('2d');
+            
+            if (sipChart) {
+                sipChart.destroy();
+            }
+            
+            const labels = [];
+            const investedData = [];
+            const valueData = [];
+            
+            let totalInvested = 0;
+            let totalValue = 0;
+            let currentSIP = monthlyInvestment;
+            
+            // SIP investment period
+            for (let year = 1; year <= years; year++) {
+                if (annualIncrement > 0) {
+                    // Calculate with increment
+                    const monthsInYear = 12;
+                    const totalMonths = years * 12;
+                    const remainingMonths = totalMonths - ((year - 1) * 12);
+                    const monthsToCalculate = Math.min(monthsInYear, remainingMonths);
+                    
+                    const yearInvested = currentSIP * monthsToCalculate;
+                    const yearValue = currentSIP * (((Math.pow(1 + monthlyRate, remainingMonths) - Math.pow(1 + monthlyRate, remainingMonths - monthsToCalculate)) / monthlyRate) * (1 + monthlyRate));
+                    
+                    totalInvested += yearInvested;
+                    totalValue += yearValue;
+                    
+                    currentSIP = currentSIP * (1 + annualIncrement);
+                } else {
+                    // Standard calculation
+                    const months = year * 12;
+                    totalInvested = monthlyInvestment * months;
+                    totalValue = monthlyInvestment * (((Math.pow(1 + monthlyRate, months) - 1) / monthlyRate) * (1 + monthlyRate));
+                }
+                
+                labels.push(`Year ${year}`);
+                investedData.push(Math.round(totalInvested));
+                valueData.push(Math.round(totalValue));
+            }
+            
+            // Holding period (no new investments, just growth)
+            if (holdingPeriod > 0) {
+                const finalInvested = totalInvested;
+                const sipEndValue = totalValue;
+                
+                for (let holdYear = 1; holdYear <= holdingPeriod; holdYear++) {
+                    const holdingValue = sipEndValue * Math.pow(1 + (monthlyRate * 12), holdYear);
+                    
+                    labels.push(`Hold ${holdYear}`);
+                    investedData.push(Math.round(finalInvested));
+                    valueData.push(Math.round(holdingValue));
+                }
+            }
+            
+            let titleText = 'SIP Growth Over Time';
+            if (annualIncrement > 0 && holdingPeriod > 0) {
+                titleText = `SIP Growth with ${(annualIncrement * 100).toFixed(1)}% Increment + ${holdingPeriod} Year Hold`;
+            } else if (annualIncrement > 0) {
+                titleText = `SIP Growth with ${(annualIncrement * 100).toFixed(1)}% Annual Increment`;
+            } else if (holdingPeriod > 0) {
+                titleText = `SIP Growth + ${holdingPeriod} Year Holding Period`;
+            }
+            
+            sipChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Amount Invested',
+                        data: investedData,
+                        borderColor: '#3b82f6',
+                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                        tension: 0.4
+                    }, {
+                        label: 'Investment Value',
+                        data: valueData,
+                        borderColor: '#10b981',
+                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: titleText
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return '₹' + value.toLocaleString('en-IN');
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Create Lumpsum Growth Chart
+        function createLumpsumChart(principal, rate, years) {
+            const ctx = document.getElementById('lumpsumChart').getContext('2d');
+            
+            if (lumpsumChart) {
+                lumpsumChart.destroy();
+            }
+            
+            const labels = [];
+            const valueData = [];
+            
+            for (let year = 1; year <= years; year++) {
+                const value = principal * Math.pow(1 + rate, year);
+                labels.push(`Year ${year}`);
+                valueData.push(value);
+            }
+            
+            lumpsumChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Investment Value',
+                        data: valueData,
+                        borderColor: '#8b5cf6',
+                        backgroundColor: 'rgba(139, 92, 246, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Lumpsum Growth Over Time'
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return '₹' + value.toLocaleString('en-IN');
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Create LIC Comparison Chart
+        function createLICChart(premium, term, totalPremiums, maturityAmount, frequency) {
+            const ctx = document.getElementById('licChart').getContext('2d');
+            
+            if (licChart) {
+                licChart.destroy();
+            }
+            
+            const labels = [];
+            const premiumData = [];
+            const maturityData = [];
+            
+            let paymentsPerYear;
+            switch(frequency) {
+                case 'monthly': paymentsPerYear = 12; break;
+                case 'quarterly': paymentsPerYear = 4; break;
+                case 'yearly': paymentsPerYear = 1; break;
+            }
+            
+            // Calculate cumulative premiums and projected maturity value over time
+            for (let year = 1; year <= term; year++) {
+                const cumulativePremiums = premium * paymentsPerYear * year;
+                const projectedMaturity = (maturityAmount / totalPremiums) * cumulativePremiums;
+                
+                labels.push(`Year ${year}`);
+                premiumData.push(cumulativePremiums);
+                maturityData.push(projectedMaturity);
+            }
+            
+            const frequencyText = frequency.charAt(0).toUpperCase() + frequency.slice(1);
+            
+            licChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Premiums Paid',
+                        data: premiumData,
+                        backgroundColor: 'rgba(59, 130, 246, 0.7)',
+                        borderColor: '#3b82f6',
+                        borderWidth: 1
+                    }, {
+                        label: 'Projected Returns',
+                        data: maturityData,
+                        backgroundColor: 'rgba(16, 185, 129, 0.7)',
+                        borderColor: '#10b981',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: `LIC ${frequencyText} Premium vs Returns`
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return '₹' + value.toLocaleString('en-IN');
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Generate Floating EMI Table (Summary View)
+        function generateFloatingTable() {
+            const P = parseFloat(document.getElementById('floatingLoanAmount').value);
+            const r = parseFloat(document.getElementById('floatingRate').value) / 100 / 12;
+            const n = parseFloat(document.getElementById('floatingTenure').value);
+            const extraPayment = parseFloat(document.getElementById('floatingExtra').value) || 0;
+            
+            if (P <= 0 || r <= 0 || n <= 0) {
+                return;
+            }
+            
+            const standardEMI = (P * r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
+            const monthlyExtraPayment = extraPayment / 12;
+            
+            const tableBody = document.getElementById('floatingTableBody');
+            tableBody.innerHTML = '';
+            
+            let balance = P;
+            let currentYear = 1;
+            let yearlyEMIPaid = 0;
+            let yearlyExtraPaid = 0;
+            let yearlyPrincipalPaid = 0;
+            let yearlyInterestPaid = 0;
+            let monthsInCurrentYear = 0;
+            let monthlyDetails = [];
+            
+            for (let month = 1; month <= n && balance > 0.01; month++) {
+                const interestPayment = balance * r;
+                let principalPayment = standardEMI - interestPayment;
+                let extraThisMonth = monthlyExtraPayment;
+                
+                // Add extra payment to principal
+                if (extraThisMonth > 0) {
+                    principalPayment += extraThisMonth;
+                }
+                
+                // Ensure we don't overpay
+                if (principalPayment > balance) {
+                    extraThisMonth = extraThisMonth - (principalPayment - balance);
+                    principalPayment = balance;
+                }
+                
+                balance -= principalPayment;
+                
+                // Add to yearly totals
+                yearlyEMIPaid += standardEMI;
+                yearlyExtraPaid += extraThisMonth;
+                yearlyPrincipalPaid += principalPayment;
+                yearlyInterestPaid += interestPayment;
+                monthsInCurrentYear++;
+                
+                // Store monthly details
+                monthlyDetails.push({
+                    month: monthsInCurrentYear,
+                    emi: standardEMI,
+                    principal: principalPayment - extraThisMonth,
+                    interest: interestPayment,
+                    extra: extraThisMonth,
+                    balance: balance
+                });
+                
+                // If year is complete or loan is paid off
+                if (month % 12 === 0 || balance <= 0.01) {
+                    const row = document.createElement('tr');
+                    row.className = 'hover:bg-gray-50';
+                    row.innerHTML = `
+                        <td class="px-3 py-2 text-gray-900 font-medium">Year ${currentYear}</td>
+                        <td class="px-3 py-2 text-right text-blue-600">₹${Math.round(yearlyEMIPaid).toLocaleString('en-IN')}</td>
+                        <td class="px-3 py-2 text-right text-green-600">₹${Math.round(yearlyExtraPaid).toLocaleString('en-IN')}</td>
+                        <td class="px-3 py-2 text-right text-purple-600">₹${Math.round(yearlyPrincipalPaid).toLocaleString('en-IN')}</td>
+                        <td class="px-3 py-2 text-right text-red-600">₹${Math.round(yearlyInterestPaid).toLocaleString('en-IN')}</td>
+                        <td class="px-3 py-2 text-right text-gray-900 font-medium">₹${Math.round(balance).toLocaleString('en-IN')}</td>
+                        <td class="px-3 py-2 text-center">
+                            <button onclick="toggleFloatingMonthlyDetails(${currentYear})" class="text-blue-600 hover:text-blue-800 text-xs px-2 py-1 border border-blue-300 rounded hover:bg-blue-50">
+                                View Months
+                            </button>
+                        </td>
+                    `;
+                    tableBody.appendChild(row);
+                    
+                    // Hidden monthly details row
+                    const detailsRow = document.createElement('tr');
+                    detailsRow.id = `floatingMonthlyDetails${currentYear}`;
+                    detailsRow.className = 'hidden';
+                    detailsRow.innerHTML = `
+                        <td colspan="7" class="px-3 py-2 bg-gray-50">
+                            <div class="max-h-40 overflow-y-auto">
+                                <table class="w-full text-xs">
+                                    <thead>
+                                        <tr class="bg-gray-100">
+                                            <th class="px-2 py-1 text-left">Month</th>
+                                            <th class="px-2 py-1 text-right">EMI</th>
+                                            <th class="px-2 py-1 text-right">Principal</th>
+                                            <th class="px-2 py-1 text-right">Interest</th>
+                                            <th class="px-2 py-1 text-right">Extra</th>
+                                            <th class="px-2 py-1 text-right">Balance</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        ${monthlyDetails.map(detail => `
+                                            <tr class="hover:bg-gray-200">
+                                                <td class="px-2 py-1">${detail.month}</td>
+                                                <td class="px-2 py-1 text-right">₹${Math.round(detail.emi).toLocaleString('en-IN')}</td>
+                                                <td class="px-2 py-1 text-right text-purple-600">₹${Math.round(detail.principal).toLocaleString('en-IN')}</td>
+                                                <td class="px-2 py-1 text-right text-red-600">₹${Math.round(detail.interest).toLocaleString('en-IN')}</td>
+                                                <td class="px-2 py-1 text-right text-green-600">₹${Math.round(detail.extra).toLocaleString('en-IN')}</td>
+                                                <td class="px-2 py-1 text-right">₹${Math.round(detail.balance).toLocaleString('en-IN')}</td>
+                                            </tr>
+                                        `).join('')}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </td>
+                    `;
+                    tableBody.appendChild(detailsRow);
+                    
+                    // Reset for next year
+                    currentYear++;
+                    yearlyEMIPaid = 0;
+                    yearlyExtraPaid = 0;
+                    yearlyPrincipalPaid = 0;
+                    yearlyInterestPaid = 0;
+                    monthsInCurrentYear = 0;
+                    monthlyDetails = [];
+                    
+                    if (balance <= 0.01) break;
+                }
+            }
+        }
+
+        // Generate Floating EMI Detailed Table
+        function generateFloatingDetailedTable() {
+            const P = parseFloat(document.getElementById('floatingLoanAmount').value);
+            const r = parseFloat(document.getElementById('floatingRate').value) / 100 / 12;
+            const n = parseFloat(document.getElementById('floatingTenure').value);
+            const extraPayment = parseFloat(document.getElementById('floatingExtra').value) || 0;
+            
+            if (P <= 0 || r <= 0 || n <= 0) {
+                return;
+            }
+            
+            const standardEMI = (P * r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
+            const monthlyExtraPayment = extraPayment / 12;
+            
+            const tableBody = document.getElementById('floatingDetailedTableBody');
+            tableBody.innerHTML = '';
+            
+            let balance = P;
+            
+            for (let month = 1; month <= n && balance > 0.01; month++) {
+                const interestPayment = balance * r;
+                let principalPayment = standardEMI - interestPayment;
+                let extraThisMonth = monthlyExtraPayment;
+                
+                // Add extra payment to principal
+                if (extraThisMonth > 0) {
+                    principalPayment += extraThisMonth;
+                }
+                
+                // Ensure we don't overpay
+                if (principalPayment > balance) {
+                    extraThisMonth = extraThisMonth - (principalPayment - balance);
+                    principalPayment = balance;
+                }
+                
+                balance -= principalPayment;
+                
+                const row = document.createElement('tr');
+                row.className = 'hover:bg-gray-50';
+                row.innerHTML = `
+                    <td class="px-2 py-2 text-gray-900 font-medium">${month}</td>
+                    <td class="px-2 py-2 text-right text-blue-600">₹${Math.round(standardEMI).toLocaleString('en-IN')}</td>
+                    <td class="px-2 py-2 text-right text-purple-600">₹${Math.round(principalPayment - extraThisMonth).toLocaleString('en-IN')}</td>
+                    <td class="px-2 py-2 text-right text-red-600">₹${Math.round(interestPayment).toLocaleString('en-IN')}</td>
+                    <td class="px-2 py-2 text-right text-green-600">₹${Math.round(extraThisMonth).toLocaleString('en-IN')}</td>
+                    <td class="px-2 py-2 text-right text-gray-900 font-medium">₹${Math.round(balance).toLocaleString('en-IN')}</td>
+                `;
+                tableBody.appendChild(row);
+                
+                if (balance <= 0.01) break;
+            }
+        }
+
+        // Toggle floating monthly details visibility
+        function toggleFloatingMonthlyDetails(year) {
+            const detailsRow = document.getElementById(`floatingMonthlyDetails${year}`);
+            const button = event.target;
+            
+            if (detailsRow.classList.contains('hidden')) {
+                detailsRow.classList.remove('hidden');
+                button.textContent = 'Hide Months';
+                button.classList.add('bg-blue-100');
+            } else {
+                detailsRow.classList.add('hidden');
+                button.textContent = 'View Months';
+                button.classList.remove('bg-blue-100');
+            }
+        }
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'96be1e37a130596b',t:'MTc1NDY0NjcxNi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
